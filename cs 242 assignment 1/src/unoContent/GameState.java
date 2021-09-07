@@ -56,7 +56,7 @@ public class GameState {
 		for (int drawItr = 0; drawItr < 7; drawItr++) {
 			for (int n = 0; n < allPlayers.size(); n++) {
 				Player currPlayer = allPlayers.get(n);
-				currPlayer.drawCard(drawPile, 1);
+				currPlayer.drawCard(drawPile, 1, false, null);
 				// update the draw pile after a card is drawn
 				drawPile.remove(0);
 			}
@@ -68,29 +68,79 @@ public class GameState {
 		discardPile.add(0, cardToMatch);
 	}
 	
+	
+	// return true if the game should end, i.e. a player has 0 cards in hand
+	public boolean shouldEndGame() {
+		for (Player onePlayer : allPlayers) {
+			if (onePlayer.getStack().size() == 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
+	// reuse discard pile when draw pile is empty
+	public void ReuseDiscardPile() {
+		// check if draw pile is empty
+		// this should be down in the main game loop, but since we don't have it this week, 
+		// just check it here
+		if (drawPile.size() == 0) {
+			List<Card> discardPile_copy = new ArrayList<Card>(discardPile);
+			// set top card aside
+			discardPile_copy.remove(0);
+			// shuffle discard pile and make it the new draw pile
+			Collections.shuffle(discardPile_copy);
+		    drawPile = discardPile_copy;
+		    // update discard pile to only include the top card
+		    for (int i = 1; i < discardPile.size(); i++) {
+		    	discardPile.remove(i);
+		    }
+		}
+	}
+	
+	
+	
 	// called in the main loop in each turn after the call to Player.playCard()
 	// @param played: the card played by the player. returned by Player.playCard()
 	public void processCardPlayed(Card played) {
 		
-		String playedSymbol = played.getSymbol();
+		Player currentPlayer_ = allPlayers.get(currentPlayer);
 		
 		// check if the player has a non-zero penalty
 		if (drawPenalty.get(currentPlayer) != 0) {
-			if (! (playedSymbol.equals("draw two") || playedSymbol.equals("wild draw four")) ) {
+			boolean apply_penalty = false;
+			if (played == null) {
+				// if player has no card to play, apply penalty
+				apply_penalty = true;
+			} else if (! (played.getSymbol().equals("draw two") || played.getSymbol().equals("wild draw four")) ) {
 				// execute penalty if the player doesn't play a draw card
-				Player currentPlayer_ = allPlayers.get(currentPlayer);
-				// draw cards
-				currentPlayer_.drawCard(drawPile, drawPenalty.get(currentPlayer));
-				// skip turn
-				if (currentPlayer == allPlayers.size() - 1) {
-					// if the currentPlayer is the last player in allPlayers
-					// next player will be the first player in allPlayers
-					currentPlayer = 0;
-				} else {
-					currentPlayer += 1;
-				}
+				apply_penalty = true;
+			}
+			if (apply_penalty) {
+				currentPlayer_.drawCard(drawPile, drawPenalty.get(currentPlayer), false, null);
+				incrementCurrentPlayer();
 			}
 		}
+		
+		// player has no card that matches cardToMatch, 
+		// so draw from stack
+		if (played == null) {
+			Card drawedPlayed = currentPlayer_.drawCard(drawPile, 1, true, cardToMatch);
+			// the card just drawn by the player is not valid to play
+			if (drawedPlayed == null) {
+				// player skip this turn, finish processing 
+				incrementCurrentPlayer();
+				return;
+			} else {
+				// player played the card drawn, so process this card
+				processCardPlayed(drawedPlayed);
+			}
+		}
+		
+		
+		String playedSymbol = played.getSymbol();
+		
 		
 		// when the player plays an invalid card, end processing the card
 		boolean isValid = Utilities.checkCardValidity(cardToMatch, played);
@@ -105,41 +155,51 @@ public class GameState {
 			// process wild feature of the card first
 			processWildCard();
 			// record the penalty of drawing four cards for next player
-			if (currentPlayer == allPlayers.size() - 1) {
-				// if the currentPlayer is the last player in allPlayers
-				// next player will be the first player in allPlayers
-				drawPenalty.set(0, 4 + drawPenalty.get(currentPlayer));
-			} else {
-				drawPenalty.set(currentPlayer + 1, 4 + drawPenalty.get(currentPlayer));
-			}
+			int penalty = 4;
+			stackPenalty(penalty);
 		} else {
 			// played a non-wild card, update cardToMatch
-			cardToMatch = played;
-			if (playedSymbol.equals("skip")) {
-				// skip the next player. 
-				if (currentPlayer == allPlayers.size() - 1) {
-					// if the currentPlayer is the last player in allPlayers
-					// next player will be the first player in allPlayers
-					currentPlayer = 0;
-				} else {
-					currentPlayer += 1;
-				}
-			} else if (playedSymbol.equals("draw two")) {
-				// record the penalty of drawing two cards for next player
-				if (currentPlayer == allPlayers.size() - 1) {
-					// if the currentPlayer is the last player in allPlayers
-					// next player will be the first player in allPlayers
-					drawPenalty.set(0, 2 + drawPenalty.get(currentPlayer));
-				} else {
-					drawPenalty.set(currentPlayer + 1, 2 + drawPenalty.get(currentPlayer));
-				}
-			} else if (playedSymbol.equals("reverse")) {
-				Collections.reverse(allPlayers);
-				Collections.reverse(drawPenalty);
-			}
+			processNonWildCard(played);
 		}
 		
+		// update discard pile and player's pile
+		discardPile.add(played);
+		currentPlayer_.removeCardFromStack(played);
+		
+		
 		// next player's turn
+		incrementCurrentPlayer();
+		
+		
+	}
+
+	private void processNonWildCard(Card played) {
+		String playedSymbol = played.getSymbol();
+		cardToMatch = played;
+		if (playedSymbol.equals("skip")) {
+			incrementCurrentPlayer();
+		} else if (playedSymbol.equals("draw two")) {
+			// record the penalty of drawing two cards for next player
+			int penalty = 2;
+			stackPenalty(penalty);
+		} else if (playedSymbol.equals("reverse")) {
+			Collections.reverse(allPlayers);
+			Collections.reverse(drawPenalty);
+		}
+	}
+
+	private void stackPenalty(int penalty) {
+		if (currentPlayer == allPlayers.size() - 1) {
+			// if the currentPlayer is the last player in allPlayers
+			// next player will be the first player in allPlayers
+			drawPenalty.set(0, penalty + drawPenalty.get(currentPlayer));
+		} else {
+			drawPenalty.set(currentPlayer + 1, penalty + drawPenalty.get(currentPlayer));
+		}
+	}
+
+	// increment the variable currentPlayer to indicate it it next player's turn
+	private void incrementCurrentPlayer() {
 		if (currentPlayer == allPlayers.size() - 1) {
 			// if the currentPlayer is the last player in allPlayers
 			// next player will be the first player in allPlayers
@@ -147,11 +207,9 @@ public class GameState {
 		} else {
 			currentPlayer += 1;
 		}
-		
-		// update discard pile and player's pile
 	}
 	
-	// for wild card, ask the current player to set the color
+	// for wild cards, ask the current player to set the color
 	private void processWildCard() {
 		Boolean inputIsValid = false;
 		while(!inputIsValid) {
@@ -165,6 +223,7 @@ public class GameState {
 			if (choice == 1 || choice == 2 || choice == 3 || choice == 0) {
 				cardToMatch = new NonWildCard(null, allColors[choice]);
 				inputIsValid = true;
+				scan.close();
 			}
 			// for invalid input, ask the user to try again
 			System.out.println("invalid input, please try again");
