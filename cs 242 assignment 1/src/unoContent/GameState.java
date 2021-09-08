@@ -5,7 +5,7 @@ import java.util.*;
 
 // Note: This implementation of UNO does NOT support stacking skip cards
 
-
+// the class that includes functions and varaibles related to a game state
 public class GameState {
 	
 	// draw pile for the uno game. index 0 indicates the top card of the pile, i.e. the first 

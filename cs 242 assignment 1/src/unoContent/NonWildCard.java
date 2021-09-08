@@ -1,5 +1,6 @@
 package unoContent;
 
+// class for non wild cards, including normal number, skip, draw two, reverse
 public class NonWildCard extends Card {
 		// The color of the card, including red, yellow, green, and blue. 
 		// For wild cards, the color is NULL.

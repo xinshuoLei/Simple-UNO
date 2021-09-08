@@ -1,5 +1,7 @@
 package unoContent;
 
+
+// the abstract class of a card. includes things that all cards have in common
 public abstract class Card {
 	
 	// The symbol of the card, including 0-9, reverse, draw two, wild, and wild draw four

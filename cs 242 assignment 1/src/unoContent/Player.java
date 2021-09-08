@@ -2,6 +2,7 @@ package unoContent;
 
 import java.util.*;
 
+// the class that includes functions and varaibles related to a player of the uno game
 public class Player {
 	
 	private String name;
