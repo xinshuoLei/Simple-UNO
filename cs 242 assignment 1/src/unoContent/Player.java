@@ -37,7 +37,9 @@ public class Player {
 	public Card drawCard(List<Card> drawPile, int numCards, boolean canPlay, Card cardToMatch) {
 		Card cardDrawn = drawPile.get(0);
 		// update stack
-		stack.add(cardDrawn);
+		for (int i = 0; i < numCards; i++) {
+			stack.add(cardDrawn);
+		}
 		if (canPlay) {
 			// if the card drawn matches cardToMatch, it must be played
 			boolean mustPlay = Utilities.checkCardValidity(cardToMatch, cardToMatch);

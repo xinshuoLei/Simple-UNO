@@ -1,5 +1,6 @@
 package unoContent;
 
+import java.awt.print.Printable;
 import java.util.*; 
 
 // Note: This implementation of UNO does NOT support stacking skip cards
@@ -93,8 +94,8 @@ public class GameState {
 			Collections.shuffle(discardPile_copy);
 		    drawPile = discardPile_copy;
 		    // update discard pile to only include the top card
-		    for (int i = 1; i < discardPile.size(); i++) {
-		    	discardPile.remove(i);
+		    while (discardPile.size() != 1) {
+		    	discardPile.remove(discardPile.size() - 1);
 		    }
 		}
 	}
@@ -113,13 +114,24 @@ public class GameState {
 			if (played == null) {
 				// if player has no card to play, apply penalty
 				apply_penalty = true;
-			} else if (! (played.getSymbol().equals("draw two") || played.getSymbol().equals("wild draw four")) ) {
-				// execute penalty if the player doesn't play a draw card
+			} else if (cardToMatch.getSymbol().equals("draw two") && 
+						!played.getSymbol().equals("draw two")) {
+				// if last card is draw two
+				// execute penalty if the player doesn't play a draw two card
+				apply_penalty = true;
+			} else if (cardToMatch.getSymbol().equals("wild draw four") && 
+					!played.getSymbol().equals("wild draw four")) {
+				// if last card is draw two
+				// execute penalty if the player doesn't play a draw two card
 				apply_penalty = true;
 			}
 			if (apply_penalty) {
 				currentPlayer_.drawCard(drawPile, drawPenalty.get(currentPlayer), false, null);
+				for (int i = 0; i < drawPenalty.get(currentPlayer); i++) {
+					drawPile.remove(0);
+				}
 				incrementCurrentPlayer();
+				return;
 			}
 		}
 		
@@ -127,6 +139,7 @@ public class GameState {
 		// so draw from stack
 		if (played == null) {
 			Card drawedPlayed = currentPlayer_.drawCard(drawPile, 1, true, cardToMatch);
+			drawPile.remove(0);
 			// the card just drawn by the player is not valid to play
 			if (drawedPlayed == null) {
 				// player skip this turn, finish processing 
@@ -138,9 +151,7 @@ public class GameState {
 			}
 		}
 		
-		
 		String playedSymbol = played.getSymbol();
-		
 		
 		// when the player plays an invalid card, end processing the card
 		boolean isValid = Utilities.checkCardValidity(cardToMatch, played);
@@ -150,10 +161,10 @@ public class GameState {
 		}
 		
 		if (playedSymbol.equals("wild")) {
-			processWildCard();
+			processWildCard("wild");
 		} else if (playedSymbol.equals("wild draw four")) {
 			// process wild feature of the card first
-			processWildCard();
+			processWildCard("wild draw four");
 			// record the penalty of drawing four cards for next player
 			int penalty = 4;
 			stackPenalty(penalty);
@@ -163,14 +174,11 @@ public class GameState {
 		}
 		
 		// update discard pile and player's pile
-		discardPile.add(played);
+		discardPile.add(0, played);
 		currentPlayer_.removeCardFromStack(played);
-		
-		
+			
 		// next player's turn
 		incrementCurrentPlayer();
-		
-		
 	}
 
 	private void processNonWildCard(Card played) {
@@ -210,9 +218,8 @@ public class GameState {
 	}
 	
 	// for wild cards, ask the current player to set the color
-	private void processWildCard() {
-		Boolean inputIsValid = false;
-		while(!inputIsValid) {
+	private void processWildCard(String symbol) {
+		while(true) {
 			System.out.println("plase choose the next color to be matched");
 			System.out.println("enter 0 for yellow, 1 for red, 2 for green, or 3 for blue");
 			// ask for user keyboard input
@@ -221,9 +228,11 @@ public class GameState {
 			// if choice is valid, change color to match to a card with no symbol and 
 			// the selected color and break out the loop
 			if (choice == 1 || choice == 2 || choice == 3 || choice == 0) {
-				cardToMatch = new NonWildCard(null, allColors[choice]);
-				inputIsValid = true;
+				// set cardToMatch to account for the fact last played card is wild draw four
+				// and the color player selected
+				cardToMatch = new NonWildCard(symbol, allColors[choice]);
 				scan.close();
+				break;
 			}
 			// for invalid input, ask the user to try again
 			System.out.println("invalid input, please try again");
@@ -259,7 +268,7 @@ public class GameState {
 	}
 
 	
-	// below are getters used by unit tests
+	// below are getters and setters used by unit tests
 	
 	public List<Card> getDrawPile() {
 		return drawPile;
@@ -281,6 +290,22 @@ public class GameState {
 
 	public void setCardToMatch(Card cardToMatch) {
 		this.cardToMatch = cardToMatch;
+	}
+
+	public void setDrawPile(List<Card> drawPile) {
+		this.drawPile = drawPile;
+	}
+
+	public void setDiscardPile(List<Card> discardPile) {
+		this.discardPile = discardPile;
+	}
+
+	public int getCurrentPlayer() {
+		return currentPlayer;
+	}
+
+	public void setCurrentPlayer(int currentPlayer) {
+		this.currentPlayer = currentPlayer;
 	}
 
 
