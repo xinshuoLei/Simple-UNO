@@ -148,6 +148,7 @@ public class GameState {
 			} else {
 				// player played the card drawn, so process this card
 				processCardPlayed(drawedPlayed);
+				return;
 			}
 		}
 		
@@ -204,6 +205,8 @@ public class GameState {
 		} else {
 			drawPenalty.set(currentPlayer + 1, penalty + drawPenalty.get(currentPlayer));
 		}
+		// remove penalty for current player
+		drawPenalty.set(currentPlayer, 0);
 	}
 
 	// increment the variable currentPlayer to indicate it it next player's turn
@@ -235,7 +238,6 @@ public class GameState {
 				break;
 			}
 			// for invalid input, ask the user to try again
-			System.out.println("invalid input, please try again");
 		}
 	}
 
@@ -308,5 +310,8 @@ public class GameState {
 		this.currentPlayer = currentPlayer;
 	}
 
+	public List<Integer> getDrawPenalty() {
+		return drawPenalty;
+	}
 
 }

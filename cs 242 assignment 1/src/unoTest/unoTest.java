@@ -49,14 +49,6 @@ class unoTest {
 	}
 	
 	
-	// helper function that print out a pile
-	void printCardPile(List<Card> pile) {
-		for (Card oneCard : pile) {
-			oneCard.printCard();
-		}
-	}
-	
-	
 	// helper function that check if two cards are equal
 	boolean cardIsEqual(Card first, Card second) {
 		// if both are wild cards
@@ -417,7 +409,6 @@ class unoTest {
 		GameState state = new GameState(playerNames);
 		state.initializePlayerStack();
 		
-		// set cardToMatch so we can know if it is updated
 		state.setCardToMatch(new NonWildCard("5", "blue"));
 		// set current player to 3
 		state.setCurrentPlayer(3);
@@ -433,5 +424,48 @@ class unoTest {
 		assertEquals(player1_initialStack.size() + 2, player1_initialStack.size() + 2,  
 				"next player should draw two cards");
 		assertEquals(1, state.getCurrentPlayer(), "next playe's turn should be skipped");
+	}
+	
+	@Test
+	@DisplayName("Check effect of a vaid draw two card - with stacking")
+	void testValidDrawTwoCard_stack() {
+		List<String> playerNames = new ArrayList<>(testPlayerList1);
+		GameState state = new GameState(playerNames);
+		state.initializePlayerStack();
+		
+		state.setCardToMatch(new NonWildCard("7", "yellow"));
+		// set current player to 0
+		state.setCurrentPlayer(0);
+		// process a draw two card
+		Card played = new NonWildCard("draw two", "yellow");
+		state.processCardPlayed(played);
+		// process another draw two card
+		state.processCardPlayed(new NonWildCard("draw two", "blue"));
+		List<Integer> penalty = state.getDrawPenalty();
+		// penalty for player with index 1 should be 0
+		assertEquals(0, penalty.get(1),  
+				"player that play another draw two card avoid penalty");
+		// penalty for player with index 2 should be 4
+		assertEquals(4, penalty.get(2), "next playe's penalty should be stacked");
+	}
+	
+	@Test
+	@DisplayName("player draw a card and is able to play it")
+	void testDrawAndPlay() {
+		List<String> playerNames = new ArrayList<>(testPlayerList1);
+		GameState state = new GameState(playerNames);
+		state.initializePlayerStack();
+		
+		state.setCardToMatch(new NonWildCard("5", "green"));
+		// set draw pile so we can know what the next card is 
+		state.setDrawPile(new ArrayList<>(testPile1));
+		// set current player to 0
+		state.setCurrentPlayer(0);
+		// player 0 does not have card that match
+		state.processCardPlayed(null);
+		// we know he can play the card he draw
+		// so cardToMatch should be updated
+		assertEquals(true, cardIsEqual(testPile1.get(0), state.getCardToMatch()), 
+				"player should play the card and it should be processed");
 	}
 }
