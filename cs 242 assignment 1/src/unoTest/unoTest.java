@@ -229,7 +229,8 @@ class unoTest {
 		List<Card> drawPile = state.getDrawPile();
 		
 		// compare result
-		assertEquals(true, drawPile.equals(testPile1), "Draw pile should be the same");
+		assertEquals(true, drawPile.equals(testPile1), 
+				"Draw pile should be the same");
 		assertEquals(true, discardPile.equals(testPile2), "Discard pile should be the same");
 	}
 
@@ -244,7 +245,8 @@ class unoTest {
 		Player SecondPlayer = state.getAllPlayers().get(1);
 		SecondPlayer.setStack(new ArrayList<Card>());
 		
-		assertNotEquals(-1, state.checkWinner(), "shouldEnd Game should return true  if a player has no card in hand");
+		assertNotEquals(-1, state.checkWinner(), 
+				"shouldEnd Game should return true  if a player has no card in hand");
 	}
 	
 	@Test
@@ -258,7 +260,8 @@ class unoTest {
 		Player FirstPlayer = state.getAllPlayers().get(0);
 		FirstPlayer.setStack(new ArrayList<Card>(testPile1));
 		
-		assertEquals(-1, state.checkWinner(), "shouldEnd Game should return false if all players have card");
+		assertEquals(-1, state.checkWinner(), 
+				"shouldEnd Game should return false if all players have card");
 	}
 	
 	@Test
@@ -284,7 +287,8 @@ class unoTest {
 		// compare discard pile 
 		// should be original pile + played, with played as position 0
 		List<Card> disacrdPile = state.getDiscardPile();
-		assertEquals(testPile2.size() + 1, disacrdPile.size(), "size of dicard pile should increase by 1");
+		assertEquals(testPile2.size() + 1, disacrdPile.size(), 
+				"size of dicard pile should increase by 1");
 		assertEquals(true, cardIsEqual(played, disacrdPile.get(0)), 
 				"card played should appear at front of discard pile");
 		

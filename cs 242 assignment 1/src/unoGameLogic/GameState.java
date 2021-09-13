@@ -169,7 +169,7 @@ public class GameState {
 			if (applyPenalty) {
 				// apply penalty and skip current player's turn
 				currentPlayer_.drawCard(new ArrayList<>(drawPile), 
-									drawPenalty.get(currentPlayer), false, null, null);
+						drawPenalty.get(currentPlayer), false, null, null);
 				for (int i = 0; i < drawPenalty.get(currentPlayer); i++) {
 					drawPile.remove(0);
 				}
@@ -181,7 +181,7 @@ public class GameState {
 		// so draw from stack
 		if (played == null) {
 			Card drawedPlayed = currentPlayer_.drawCard(new ArrayList<>(drawPile), 
-													1, true, cardToMatch, cardBeforeSpecial);
+					1, true, cardToMatch, cardBeforeSpecial);
 			drawPile.remove(0);
 			// the card just drawn by the player is not valid to play
 			if (drawedPlayed == null) {
@@ -239,7 +239,7 @@ public class GameState {
 				// if player has no card to play, apply penalty
 				applyPenalty = true;
 			} else if (cardToMatch.getSymbol().equals("draw two") && 
-						!played.getSymbol().equals("draw two")) {
+					!played.getSymbol().equals("draw two")) {
 				// if last card is draw two
 				// execute penalty if the player doesn't play a draw two card
 				applyPenalty = true;
@@ -294,16 +294,16 @@ public class GameState {
 	private void stackPenalty(int penalty) {
 		int playerNum = allPlayers.size();
 		if (penalty == 2) {
-			int penaltyApplied = penalty / 2 + drawPenalty.get(currentPlayer) + 
-						+ drawPenalty.get((currentPlayer + 1) % playerNum);
+			int penaltyApplied = penalty / 2 + drawPenalty.get(currentPlayer) 
+					+ drawPenalty.get((currentPlayer + 1) % playerNum);
 			// next player get the penalty of current player + 1
 			drawPenalty.set((currentPlayer + 1) % playerNum, penaltyApplied);
 			// preceding player get the penalty of 1
-			drawPenalty.set((currentPlayer + 2) % playerNum, penalty / 2 + 
-						drawPenalty.get((currentPlayer + 2) % playerNum));
+			drawPenalty.set((currentPlayer + 2) % playerNum, penalty / 2 
+					+ drawPenalty.get((currentPlayer + 2) % playerNum));
 		} else {
-			int penaltyApplied = penalty + drawPenalty.get(currentPlayer)
-								+ drawPenalty.get((currentPlayer + 1) % playerNum);
+			int penaltyApplied = penalty + drawPenalty.get(currentPlayer) 
+					+ drawPenalty.get((currentPlayer + 1) % playerNum);
 			drawPenalty.set((currentPlayer + 1) % playerNum, penaltyApplied);
 		}
 		// remove penalty for current player
@@ -390,7 +390,7 @@ public class GameState {
 	 * @return return if the card is valid
 	 */
 	public static boolean checkCardValidity(Card cardToMatch, Card cardBeforeSpcial,
-												Card cardPlayed) {
+			Card cardPlayed) {
 		// wild cards are always valid
 		if (cardPlayed.isWild()) {
 			return true;
@@ -405,9 +405,9 @@ public class GameState {
 		if (!cardToMatch.isNumber() && cardBeforeSpcial != null) {
 			// store the current cardToMatch as cardBeforeSpecial
 			boolean colorMatchSpecial = (cardPlayed.getColor() == 
-											cardBeforeSpcial.getColor());
+					cardBeforeSpcial.getColor());
 			boolean symbolMatchSpecial = (cardPlayed.getSymbol() == 
-											cardBeforeSpcial.getSymbol());
+					cardBeforeSpcial.getSymbol());
 			return colorMatchSpecial || symbolMatchSpecial || validNormal;
 		}
 		

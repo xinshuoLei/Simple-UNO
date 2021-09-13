@@ -63,7 +63,7 @@ public class Player {
 		if (canPlay) {
 			// if the card drawn matches cardToMatch, it must be played
 			boolean mustPlay = GameState.checkCardValidity(cardToMatch, 
-													cardBeforeSpecial, cardDrawn);
+					cardBeforeSpecial, cardDrawn);
 			if (mustPlay) {
 				return cardDrawn;
 			}

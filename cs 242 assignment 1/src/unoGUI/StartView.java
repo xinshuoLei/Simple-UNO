@@ -75,21 +75,21 @@ public class StartView {
 		JFrame start = new JFrame("UNO");
 		start.setSize(START_WINDOW_WIDTH, START_WINDOW_HEIGHT);
 		JPanel startPanel = Utilities.initializePanel(START_WINDOW_WIDTH,
-													START_WINDOW_HEIGHT);
+				START_WINDOW_HEIGHT);
 		
 		// add start game button to startPanel
 		String buttonText = "start game";
 		int buttonX = (START_WINDOW_WIDTH - BUTTON_WIDTH) / 2;
 		int buttonY = 550;
 		Utilities.addButton(startPanel, buttonText, BUTTON_WIDTH, BUTTON_HEIGHT, 
-							buttonX, buttonY);
+				buttonX, buttonY);
 		
 		// add uno logo via url
 		int imageX = (START_WINDOW_WIDTH - IMAGE_WIDTH) / 2;
 	    int imageY = 100;
 	    String logoUrl = "https://i.dlpng.com/static/png/6905409_preview.png";
 		Utilities.displayImageFromUrl(startPanel, IMAGE_WIDTH, IMAGE_HEIGHT, 
-										imageX, imageY, logoUrl);
+				imageX, imageY, logoUrl);
 		
 		// add input prompt and input box
 		initializeInput(startPanel);

@@ -54,13 +54,13 @@ public class EndView {
 		JFrame endView = new JFrame("End");
 		endView.setSize(END_WINDOW_WIDTH,END_WINDOW_HEIGHT);
 		JPanel endPanel = Utilities.initializePanel(END_WINDOW_WIDTH, 
-													END_WINDOW_HEIGHT);
+				END_WINDOW_HEIGHT);
 		
 		// display winner prompt
 		String winnerPrompt = "The winner is " + winner + "!" ;
 		int promptY = 520;
 		Utilities.displayText(endPanel, winnerPrompt, FONT_SIZE, 
-									END_WINDOW_WIDTH, promptY);
+				END_WINDOW_WIDTH, promptY);
 		
 		// display a trophy image
 		String trophyUrl = 
@@ -71,7 +71,7 @@ public class EndView {
 		int imageX = (END_WINDOW_WIDTH - IMAGE_WIDTH) / 2;
 		int imageY = 150;
 		Utilities.displayImageFromUrl(endPanel, IMAGE_WIDTH, IMAGE_HEIGHT, 
-										imageX, imageY, trophyUrl);
+				imageX, imageY, trophyUrl);
 		
 		endView.setContentPane(endPanel);
 		endView.setVisible(true);

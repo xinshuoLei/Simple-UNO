@@ -24,7 +24,7 @@ public class Utilities {
 	  * reference: https://stackoverflow.com/questions/13448368/trying-to-display-url-image-in-jframe
 	  */
 	 public static void displayImageFromUrl(JPanel panel, int width , 
-			 			int height, int locationX, int locationY, String path){
+			 int height, int locationX, int locationY, String path){
 		 try {
 			 // try getting the uno logo from the url
 	         URL url = new URL(path);
@@ -32,7 +32,7 @@ public class Utilities {
 	         
 	         // scale the image
 	         Image scaled_logo = logo.getScaledInstance(width, height,
-	        	        Image.SCALE_SMOOTH);
+	        		 Image.SCALE_SMOOTH);
 			 JLabel picLabel = new JLabel(new ImageIcon(scaled_logo));
 			 
 			 // add image to startPanel
@@ -70,7 +70,7 @@ public class Utilities {
 	  * @param locationY y-coordination of the image
 	  */
 	 public static void displayText(JPanel panel, String text, float fontSize, 
-			 							int windowWidth, int locationY) {
+			 int windowWidth, int locationY) {
 		 // text prompt
 		 JLabel inputPrompt = new JLabel(text);
 		 panel.add(inputPrompt);
@@ -93,7 +93,7 @@ public class Utilities {
 	 * @param locationY y-coordination of the button
 	 */
 	 public static void addButton(JPanel panel, String text, int width, int height, 
-			 						int locationX, int locationY) {
+			 int locationX, int locationY) {
 	        JButton button = new JButton(text);
 	        // TODO: add action listener
 	        panel.add(button);
