@@ -1,13 +1,13 @@
-package GUI;
+package unoGUI;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import unoContent.Card;
-import unoContent.GameState;
-import unoContent.Player;
+import unoCard.Card;
+import unoGameLogic.GameState;
+import unoGameLogic.Player;
 
 public class Main {
 

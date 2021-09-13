@@ -1,6 +1,8 @@
-package unoContent;
+package unoGameLogic;
 
 import java.util.*;
+
+import unoCard.Card;
 
 /**
  * the class that includes functions and varaibles related to a player of the uno game

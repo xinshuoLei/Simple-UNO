@@ -1,4 +1,4 @@
-package unoContent;
+package unoCard;
 
 /**
  * The abstract class of a card. includes things that all cards have in common

@@ -1,4 +1,4 @@
-package unoContent;
+package unoCard;
 
 /**
  * class for wild cards and wild draw four cards

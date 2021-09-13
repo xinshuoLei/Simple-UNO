@@ -4,14 +4,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import unoContent.GameState;
-import unoContent.NumberCard;
-import unoContent.Player;
-import unoContent.ReverseCard;
-import unoContent.SkipCard;
-import unoContent.WildCard;
-import unoContent.Card;
-import unoContent.DrawTwoCard;
+
+import unoCard.Card;
+import unoCard.DrawTwoCard;
+import unoCard.NumberCard;
+import unoCard.ReverseCard;
+import unoCard.SkipCard;
+import unoCard.WildCard;
+import unoGameLogic.GameState;
+import unoGameLogic.Player;
 
 import java.util.*;
 

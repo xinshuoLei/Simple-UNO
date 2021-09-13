@@ -1,4 +1,4 @@
-package GUI;
+package unoGUI;
 
 import java.awt.Dimension;
 import java.awt.Image;

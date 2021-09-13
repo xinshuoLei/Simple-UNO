@@ -1,4 +1,4 @@
-package unoContent;
+package unoCard;
 
 /**
  * Class for reverse cards
