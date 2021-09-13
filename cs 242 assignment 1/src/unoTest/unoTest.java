@@ -24,9 +24,12 @@ class unoTest {
 	List<Card> testPile1 = generateTestPile1();
 	List<Card> testPile2 = generateTestPile2();
 	// test player lists
-	List<String> testPlayerList1 = new ArrayList<>(Arrays.asList("Player 1", "Player2", "Player3"));
-	List<String> testPlayerList2 = new ArrayList<>(Arrays.asList("Player 1", "Player2"));
-	List<String> testPlayerList3 = new ArrayList<>(Arrays.asList("Player 1", "Player2", "Player3", "Player4"));
+	List<String> testPlayerList1 = new ArrayList<>(Arrays.asList("Player 1", 
+			"Player2", "Player3"));
+	List<String> testPlayerList2 = new ArrayList<>(Arrays.asList("Player 1",
+			"Player2"));
+	List<String> testPlayerList3 = new ArrayList<>(Arrays.asList("Player 1",
+			"Player2", "Player3", "Player4"));
 	
 	// functions that generates card piles for test
 	
@@ -65,7 +68,8 @@ class unoTest {
 			return false;
 		} else {
 			// both are non-wild cards, check color and symbol
-			return (first.getSymbol() == second.getSymbol()) && (first.getColor() == second.getColor());
+			return (first.getSymbol() == second.getSymbol()) 
+					&& (first.getColor() == second.getColor());
 		}
 	}
 	
@@ -74,7 +78,8 @@ class unoTest {
 	@DisplayName("Check initial draw pile")
 	void testInitialPile() {
 		GameState state = new GameState(null);
-		assertEquals(108, state.getDrawPile().size(), "The size of the initial draw pile should be 108");
+		assertEquals(108, state.getDrawPile().size(), 
+				"The size of the initial draw pile should be 108");
 	}
 	
 	@Test
@@ -95,7 +100,8 @@ class unoTest {
 		GameState state = new GameState(playerNames);
 		state.initializePlayerStack();
 		for (Player onePlayer : state.getAllPlayers()) {
-			assertEquals(7, onePlayer.getStack().size(), "Player's initial stack should have seven cards");
+			assertEquals(7, onePlayer.getStack().size(), 
+					"Player's initial stack should have seven cards");
 		}
 	}
 	
@@ -111,35 +117,40 @@ class unoTest {
 	@DisplayName("Utilites.isWild can identify wild card - part2")
 	void testIsWild2() {
 		boolean returnVal = (new WildCard("wild draw four", null)).isWild();
-		assertEquals(true, returnVal, "isWild should return true for wild draw four cards");
+		assertEquals(true, returnVal, 
+				"isWild should return true for wild draw four cards");
 	}
 	
 	@Test
 	@DisplayName("Utilites.isWild can identify non wild card - part1")
 	void testIsWildFalse1() {
 		boolean returnVal= (new NumberCard("0", "yellow")).isWild();
-		assertEquals(false, returnVal, "isWild should return false for normal number cards");
+		assertEquals(false, returnVal, 
+				"isWild should return false for normal number cards");
 	}
 	
 	@Test
 	@DisplayName("Utilites.isWild can identify non wild card - part2")
 	void testIsWildFalse2() {
 		boolean returnVal = (new ReverseCard("reverse", "red").isWild());
-		assertEquals(false, returnVal, "isWild should return false for reverse cards");
+		assertEquals(false, returnVal, 
+				"isWild should return false for reverse cards");
 	}
 	
 	@Test
 	@DisplayName("Utilites.isWild can identify non wild card - part3")
 	void testIsWildFalse3() {
 		boolean returnValWild = (new DrawTwoCard("draw two", "green")).isWild();
-		assertEquals(false, returnValWild, "isWild should return false for draw two cards");
+		assertEquals(false, returnValWild, 
+				"isWild should return false for draw two cards");
 	}
 	
 	@Test
 	@DisplayName("Utilites.isWild can identify non wild card - part4")
 	void testIsWildFalse4() {
 		boolean returnValWild = (new SkipCard("skip", "blue")).isWild();
-		assertEquals(false, returnValWild, "isWild should return false for skip cards");
+		assertEquals(false, returnValWild, 
+				"isWild should return false for skip cards");
 	}
 	
 	@Test
@@ -159,7 +170,8 @@ class unoTest {
 		Card toCheck = new ReverseCard("reverse", "blue");
 		boolean validity = GameState.checkCardValidity(cardToMatch, null, toCheck);
 		
-		assertEquals(false, validity, "checkValidity should return false if neither symbol nor color match");
+		assertEquals(false, validity, 
+				"checkValidity should return false if neither symbol nor color match");
 	}
 	
 	@Test
@@ -168,7 +180,8 @@ class unoTest {
 		Card cardToMatch = new SkipCard("skip", "red");
 		Card toCheck = new DrawTwoCard("draw two", "red");
 		boolean validity = GameState.checkCardValidity(cardToMatch, null, toCheck);
-		assertEquals(true, validity, "checkValidity should return true if color match");
+		assertEquals(true, validity,
+				"checkValidity should return true if color match");
 	}
 	
 	@Test
@@ -177,7 +190,8 @@ class unoTest {
 		Card cardToMatch = new NumberCard("2", "blue");
 		Card toCheck = new NumberCard("2", "red");
 		boolean validity = GameState.checkCardValidity(cardToMatch, null, toCheck);
-		assertEquals(true, validity, "checkValidity should return true if symbol match");
+		assertEquals(true, validity, 
+				"checkValidity should return true if symbol match");
 	}
 	
 	@Test
@@ -186,7 +200,8 @@ class unoTest {
 		Card cardToMatch = new NumberCard("3", "green");
 		Card toCheck = new NumberCard("3", "green");
 		boolean validity = GameState.checkCardValidity(cardToMatch, null, toCheck);
-		assertEquals(true, validity, "checkValidity should return true if color and symbol match");
+		assertEquals(true, validity, 
+				"checkValidity should return true if color and symbol match");
 	}
 	
 	@Test
@@ -203,7 +218,8 @@ class unoTest {
 		List<Card> drawPile = state.getDrawPile();
 		
 		// check discard pile
-		assertEquals(1, discardPile.size(), "After reuse, discard pile should only contain one card");
+		assertEquals(1, discardPile.size(), 
+				"After reuse, discard pile should only contain one card");
 		assertEquals(true, cardIsEqual(discardPile.get(0), new NumberCard("5", "yellow")), 
 				"After reuse, discard pile is the top card of the previous discard pile");
 		
@@ -212,7 +228,8 @@ class unoTest {
 				"After reuse, size of draw pile should be size of previous discard pile - 1");
 		for (int i = 1; i < testPile1.size(); i++) {
 			assertEquals(true, drawPile.contains(testPile1.get(i)),
-					"After reuse, draw pile should contain all cards in previous draw pile except the top card");
+					"After reuse, draw pile should contain all cards"
+					+ " in previous draw pile except the top card");
 		}
 	}
 	
@@ -231,7 +248,8 @@ class unoTest {
 		// compare result
 		assertEquals(true, drawPile.equals(testPile1), 
 				"Draw pile should be the same");
-		assertEquals(true, discardPile.equals(testPile2), "Discard pile should be the same");
+		assertEquals(true, discardPile.equals(testPile2), 
+				"Discard pile should be the same");
 	}
 
 	@Test
@@ -246,7 +264,7 @@ class unoTest {
 		SecondPlayer.setStack(new ArrayList<Card>());
 		
 		assertNotEquals(-1, state.checkWinner(), 
-				"shouldEnd Game should return true  if a player has no card in hand");
+				"shouldEnd Game should return true if a player has no card in hand");
 	}
 	
 	@Test
@@ -271,7 +289,8 @@ class unoTest {
 		GameState state = new GameState(playerNames);
 		state.initializePlayerStack();
 		
-		// give a custom discard pile to make sure the card played is added to the correct position
+		// give a custom discard pile to make sure the card played 
+		// is added to the correct position
 		state.setDiscardPile(new ArrayList<>(testPile2));
 		state.setCurrentPlayer(0);
 		// save player stack before playing a card
@@ -294,14 +313,15 @@ class unoTest {
 		
 		// compare player stack
 		List<Card> stack = FirstPlayer.getStack();
-		assertEquals(initialStack.size() - 1, stack.size(), "size of player stack should decrease by 1");
+		assertEquals(initialStack.size() - 1, stack.size(), 
+				"size of player stack should decrease by 1");
 		assertEquals(false, stack.contains(played), 
 				"card played should be removed from player stack");
 	}
 	
 
 	@Test
-	@DisplayName("Check disacrd pile and player stack is not updated when invalid card played")
+	@DisplayName("Check disacrd pile and player stack is not updated - invalid card")
 	void testUpdatePileFalse() {
 		System.out.println("output of testUpdatePileFalse(): ");
 		List<String> playerNames = new ArrayList<>(testPlayerList1);
@@ -356,7 +376,9 @@ class unoTest {
 		// compare allPlayers and initialAllPlayers
 		for (int i = 0; i < initialAllPlayers.size(); i++) {
 			int j = initialAllPlayers.size() - i - 1;
-			assertEquals(true, initialAllPlayers.get(i).getName().equals(allPlayers.get(j).getName()), 
+			String nameI = initialAllPlayers.get(i).getName();
+			String nameJ = allPlayers.get(j).getName();
+			assertEquals(true, nameI.equals(nameJ), 
 					"allPlayers list should be reversed");
 		}
 	}
@@ -434,7 +456,8 @@ class unoTest {
 		state.processCardPlayed(new NumberCard("4", "blue"));
 		assertEquals(player1InitialStack.size() + 1, player1InitialStack.size() + 1,  
 				"next player should draw one cards because of draw split");
-		assertEquals(1, state.getCurrentPlayer(), "next playe's turn should be skipped");
+		assertEquals(1, state.getCurrentPlayer(), 
+				"next playe's turn should be skipped");
 	}
 	
 	@Test

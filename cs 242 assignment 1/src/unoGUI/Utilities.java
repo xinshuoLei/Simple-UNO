@@ -26,13 +26,15 @@ public class Utilities {
 	 public static void displayImageFromUrl(JPanel panel, int width , 
 			 int height, int locationX, int locationY, String path){
 		 try {
+			 
 			 // try getting the uno logo from the url
-	         URL url = new URL(path);
+			 URL url = new URL(path);
 	         BufferedImage logo = ImageIO.read(url);
 	         
 	         // scale the image
 	         Image scaled_logo = logo.getScaledInstance(width, height,
 	        		 Image.SCALE_SMOOTH);
+	         
 			 JLabel picLabel = new JLabel(new ImageIcon(scaled_logo));
 			 
 			 // add image to startPanel
