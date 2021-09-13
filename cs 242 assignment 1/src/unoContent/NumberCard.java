@@ -9,11 +9,4 @@ public class NumberCard extends Card {
 			super(setSymbol, setColor);
 		}
 		
-		/**
-		 * function that print info about the card to stdout
-		 */
-		public void printCard() {
-			System.out.println(getSymbol() + " " + getColor());
-		}
-
 }

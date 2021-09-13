@@ -167,7 +167,6 @@ class unoTest {
 		Card cardToMatch = new SkipCard("skip", "red");
 		Card toCheck = new DrawTwoCard("draw two", "red");
 		boolean validity = GameState.checkCardValidity(cardToMatch, null, toCheck);
-		
 		assertEquals(true, validity, "checkValidity should return true if color match");
 	}
 	
@@ -428,15 +427,15 @@ class unoTest {
 		// the next player plays a card that is not draw two
 		// so this player need to draw two card and skip this turn
 		state.processCardPlayed(new NumberCard("4", "blue"));
-		assertEquals(player1InitialStack.size() + 2, player1InitialStack.size() + 2,  
-				"next player should draw two cards");
+		assertEquals(player1InitialStack.size() + 1, player1InitialStack.size() + 1,  
+				"next player should draw one cards because of draw split");
 		assertEquals(1, state.getCurrentPlayer(), "next playe's turn should be skipped");
 	}
 	
 	@Test
 	@DisplayName("Check effect of a vaid draw two card - with stacking")
 	void testValidDrawTwoCardStack() {
-		List<String> playerNames = new ArrayList<>(testPlayerList1);
+		List<String> playerNames = new ArrayList<>(testPlayerList3);
 		GameState state = new GameState(playerNames);
 		state.initializePlayerStack();
 		
@@ -444,19 +443,23 @@ class unoTest {
 		// set current player to 0
 		state.setCurrentPlayer(0);
 		
-		// process a draw two card
+		// player1 plays draw two, so penalty for player2 and 3 should be 1 
 		Card played = new DrawTwoCard("draw two", "yellow");
 		state.processCardPlayed(played);
 		
-		// process another draw two card
+		// player2 plays another draw two
+		// penalty for player3 should be 1+1+1 = 3
+		// penalty for player4 should be 0+1 = 1
 		state.processCardPlayed(new DrawTwoCard("draw two", "blue"));
 		List<Integer> penalty = state.getDrawPenalty();
 		
 		// penalty for player with index 1 should be 0
 		assertEquals(0, penalty.get(1),  
 				"player that play another draw two card avoid penalty");
-		// penalty for player with index 2 should be 4
-		assertEquals(4, penalty.get(2), "next playe's penalty should be stacked");
+		// penalty for player with index 2 should be 2
+		assertEquals(3, penalty.get(2), "next 2 players' penalty should be stacked");
+		// penalty for player with index 3 should be 2
+		assertEquals(1, penalty.get(3), "next 2 players' penalty should be stacked");
 	}
 	
 	@Test

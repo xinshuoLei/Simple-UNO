@@ -10,11 +10,4 @@ public class WildCard extends Card {
 		// If it is played by a player, then the color is the color chosen by the player
 		super(setType, setColor);
 	}
-	
-	/**
-	 * function that print info about the card to stdout
-	 */
-	public void printCard() {
-		System.out.println(getSymbol());
-	}
 }

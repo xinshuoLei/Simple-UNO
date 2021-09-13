@@ -6,7 +6,13 @@ import java.util.*;
 
 /**
  * The class that includes functions and variables related to a game state
- * Two custom rules implemented are 1.split draw and 2.card before special
+ * 
+ * Two custom rules implemented are
+ * 1.split draw: When a draw 2 card is played, the person 
+ * immediately following and preceding the player draws 1 card.
+ * 2.card before special: After a special card is played, excluding black, 
+ * you have the option of playing on the card before the special. 
+ * 
  * Note: This implementation does not support stacking skip card
  */
 public class GameState {
@@ -275,16 +281,23 @@ public class GameState {
 	/**
 	 * Function that stack the draw penalty of the current player 
 	 * to the next player
+	 * Special Custom rule: split draw
 	 * @param penalty penalty that should be added to next player
 	 */
 	private void stackPenalty(int penalty) {
-		if (currentPlayer == allPlayers.size() - 1) {
-			// if the currentPlayer is the last player in allPlayers
-			// next player will be the first player in allPlayers
-			drawPenalty.set(0, penalty + drawPenalty.get(currentPlayer));
+		int playerNum = allPlayers.size();
+		if (penalty == 2) {
+			int penaltyApplied = penalty / 2 + drawPenalty.get(currentPlayer) + 
+						+ drawPenalty.get((currentPlayer + 1) % playerNum);
+			// next player get the penalty of current player + 1
+			drawPenalty.set((currentPlayer + 1) % playerNum, penaltyApplied);
+			// preceding player get the penalty of 1
+			drawPenalty.set((currentPlayer + 2) % playerNum, penalty / 2 + 
+						drawPenalty.get((currentPlayer + 2) % playerNum));
 		} else {
-			drawPenalty.set(currentPlayer + 1, 
-							penalty + drawPenalty.get(currentPlayer));
+			int penaltyApplied = penalty + drawPenalty.get(currentPlayer)
+								+ drawPenalty.get((currentPlayer + 1) % playerNum);
+			drawPenalty.set((currentPlayer + 1) % playerNum, penaltyApplied);
 		}
 		// remove penalty for current player
 		drawPenalty.set(currentPlayer, 0);

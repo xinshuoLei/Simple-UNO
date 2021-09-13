@@ -41,9 +41,14 @@ public abstract class Card {
 	
 	/**
 	 * Function that print out card info. used for testing and debug
-	 * card info format: symbol, number (if applicable)
 	 */
-	public abstract void printCard();
+	public void printCard() {
+		if (color != null) {
+			System.out.println(getSymbol() + " " + getColor());
+		} else {
+			System.out.println(getSymbol());
+		}
+	}
 	
 	/**
 	 * Function that checks if a card is a wild

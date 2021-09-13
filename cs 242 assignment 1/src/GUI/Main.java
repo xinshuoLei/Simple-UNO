@@ -1,13 +1,13 @@
-package unoContent;
+package GUI;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import GUI.EndView;
-import GUI.InGame;
-import GUI.StartView;
+import unoContent.Card;
+import unoContent.GameState;
+import unoContent.Player;
 
 public class Main {
 
