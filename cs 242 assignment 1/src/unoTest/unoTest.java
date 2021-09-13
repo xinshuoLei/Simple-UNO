@@ -57,9 +57,9 @@ class unoTest {
 	// helper function that check if two cards are equal
 	boolean cardIsEqual(Card first, Card second) {
 		// if both are wild cards
-		if (Card.isWild(first) && Card.isWild(second)) {
+		if (first.isWild() && second.isWild()) {
 			return first.getSymbol() == second.getSymbol();
-		} else if (Card.isWild(first) || Card.isWild(second)) {
+		} else if (first.isWild() || second.isWild()) {
 			// only one card is wild
 			return false;
 		} else {
@@ -102,42 +102,42 @@ class unoTest {
 	@Test
 	@DisplayName("Utilites.isWild can identify wild card - part1")
 	void testIsWild1() {
-		boolean returnValWild = Card.isWild(new WildCard("wild", null));
+		boolean returnValWild = (new WildCard("wild", null)).isWild();
 		assertEquals(true, returnValWild, "isWild should return true for wild cards");
 	}
 	
 	@Test
 	@DisplayName("Utilites.isWild can identify wild card - part2")
 	void testIsWild2() {
-		boolean returnVal = Card.isWild(new WildCard("wild draw four", null));
+		boolean returnVal = (new WildCard("wild draw four", null)).isWild();
 		assertEquals(true, returnVal, "isWild should return true for wild draw four cards");
 	}
 	
 	@Test
 	@DisplayName("Utilites.isWild can identify non wild card - part1")
 	void testIsWildFalse1() {
-		boolean returnVal= Card.isWild(new NumberCard("0", "yellow"));
+		boolean returnVal= (new NumberCard("0", "yellow")).isWild();
 		assertEquals(false, returnVal, "isWild should return false for normal number cards");
 	}
 	
 	@Test
 	@DisplayName("Utilites.isWild can identify non wild card - part2")
 	void testIsWildFalse2() {
-		boolean returnVal = Card.isWild(new ReverseCard("reverse", "red"));
+		boolean returnVal = (new ReverseCard("reverse", "red").isWild());
 		assertEquals(false, returnVal, "isWild should return false for reverse cards");
 	}
 	
 	@Test
 	@DisplayName("Utilites.isWild can identify non wild card - part3")
 	void testIsWildFalse3() {
-		boolean returnValWild = Card.isWild(new DrawTwoCard("draw two", "green"));
+		boolean returnValWild = (new DrawTwoCard("draw two", "green")).isWild();
 		assertEquals(false, returnValWild, "isWild should return false for draw two cards");
 	}
 	
 	@Test
 	@DisplayName("Utilites.isWild can identify non wild card - part4")
 	void testIsWildFalse4() {
-		boolean returnValWild = Card.isWild(new SkipCard("skip", "blue"));
+		boolean returnValWild = (new SkipCard("skip", "blue")).isWild();
 		assertEquals(false, returnValWild, "isWild should return false for skip cards");
 	}
 	
@@ -146,7 +146,7 @@ class unoTest {
 	void testCheckValidityWild() {
 		Card cardToMatch = new NumberCard("1", "red");
 		Card toCheck = new WildCard("wild", null);
-		boolean validity = GameState.checkCardValidity(cardToMatch, toCheck);
+		boolean validity = GameState.checkCardValidity(cardToMatch, null, toCheck);
 		
 		assertEquals(true, validity, "wild cards are always valid");
 	}
@@ -156,7 +156,7 @@ class unoTest {
 	void testCheckValidityFalse() {
 		Card cardToMatch = new NumberCard("1", "red");
 		Card toCheck = new ReverseCard("reverse", "blue");
-		boolean validity = GameState.checkCardValidity(cardToMatch, toCheck);
+		boolean validity = GameState.checkCardValidity(cardToMatch, null, toCheck);
 		
 		assertEquals(false, validity, "checkValidity should return false if neither symbol nor color match");
 	}
@@ -166,7 +166,7 @@ class unoTest {
 	void testCheckValidity1() {
 		Card cardToMatch = new SkipCard("skip", "red");
 		Card toCheck = new DrawTwoCard("draw two", "red");
-		boolean validity = GameState.checkCardValidity(cardToMatch, toCheck);
+		boolean validity = GameState.checkCardValidity(cardToMatch, null, toCheck);
 		
 		assertEquals(true, validity, "checkValidity should return true if color match");
 	}
@@ -176,7 +176,7 @@ class unoTest {
 	void testCheckValidity2() {
 		Card cardToMatch = new NumberCard("2", "blue");
 		Card toCheck = new NumberCard("2", "red");
-		boolean validity = GameState.checkCardValidity(cardToMatch, toCheck);
+		boolean validity = GameState.checkCardValidity(cardToMatch, null, toCheck);
 		assertEquals(true, validity, "checkValidity should return true if symbol match");
 	}
 	
@@ -185,7 +185,7 @@ class unoTest {
 	void testCheckValidity3() {
 		Card cardToMatch = new NumberCard("3", "green");
 		Card toCheck = new NumberCard("3", "green");
-		boolean validity = GameState.checkCardValidity(cardToMatch, toCheck);
+		boolean validity = GameState.checkCardValidity(cardToMatch, null, toCheck);
 		assertEquals(true, validity, "checkValidity should return true if color and symbol match");
 	}
 	

@@ -40,22 +40,31 @@ public abstract class Card {
 	
 	
 	/**
-	 * function that print out card info. used for testing and debug
+	 * Function that print out card info. used for testing and debug
 	 * card info format: symbol, number (if applicable)
 	 */
 	public abstract void printCard();
 	
 	/**
-	 * function that checks if a card is a wild
-	 * @param toCheck the card to check
+	 * Function that checks if a card is a wild
 	 * @return true if the card is wild
 	 */
-	public static boolean isWild(Card toCheck) {
-		String symbol = toCheck.getSymbol();
+	public boolean isWild() {
 		if (symbol.equals("wild") || symbol.equals("wild draw four")) {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Function that check if a card is a number card
+	 * reference:
+	 * https://stackoverflow.com/questions/1102891/how-to-check-if-a-string-is-numeric-in-java
+	 * @return true if the card is a number card
+	 */
+	
+	public boolean isNumber() {
+		return symbol.chars().allMatch( Character::isDigit );
 	}
 	
 	public String getSymbol() {

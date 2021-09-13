@@ -1,10 +1,13 @@
 package unoContent;
 
-import java.util.*; 
+import java.util.*;
+
 
 
 /**
  * The class that includes functions and variables related to a game state
+ * Two custom rules implemented are 1.split draw and 2.card before special
+ * Note: This implementation does not support stacking skip card
  */
 public class GameState {
 	
@@ -38,9 +41,16 @@ public class GameState {
 	private String[] allColors = {"yellow", "red", "green", "blue"};
 	
 	/**
-	 * The card to match in each turn. updated in processCardPlayed and initializePlayerStack()
+	 * The card to match in each turn. 
+	 * updated in processCardPlayed and initializePlayerStack()
 	 */
 	private Card cardToMatch = null;
+	
+	/**
+	 * The last non-special card, i.e. the last number card
+	 * used for the custom rule: card before special
+	 */
+	private Card cardBeforeSpecial = null;
 	
 	/**
 	 * The player that needs to play a card. represented by the player's index in allPlayer's list
@@ -75,7 +85,7 @@ public class GameState {
 		for (int drawItr = 0; drawItr < 7; drawItr++) {
 			for (int n = 0; n < allPlayers.size(); n++) {
 				Player currPlayer = allPlayers.get(n);
-				currPlayer.drawCard(new ArrayList<>(drawPile), 1, false, null);
+				currPlayer.drawCard(new ArrayList<>(drawPile), 1, false, null, null);
 				// update the draw pile after a card is drawn
 				drawPile.remove(0);
 			}
@@ -146,7 +156,7 @@ public class GameState {
 			if (applyPenalty) {
 				// apply penalty and skip current player's turn
 				currentPlayer_.drawCard(new ArrayList<>(drawPile), 
-									drawPenalty.get(currentPlayer), false, null);
+									drawPenalty.get(currentPlayer), false, null, null);
 				for (int i = 0; i < drawPenalty.get(currentPlayer); i++) {
 					drawPile.remove(0);
 				}
@@ -158,7 +168,7 @@ public class GameState {
 		// so draw from stack
 		if (played == null) {
 			Card drawedPlayed = currentPlayer_.drawCard(new ArrayList<>(drawPile), 
-													1, true, cardToMatch);
+													1, true, cardToMatch, cardBeforeSpecial);
 			drawPile.remove(0);
 			// the card just drawn by the player is not valid to play
 			if (drawedPlayed == null) {
@@ -174,7 +184,7 @@ public class GameState {
 		String playedSymbol = played.getSymbol();
 		
 		// when the player plays an invalid card, end processing the card
-		boolean isValid = GameState.checkCardValidity(cardToMatch, played);
+		boolean isValid = GameState.checkCardValidity(cardToMatch, cardBeforeSpecial, played);
 		if (!isValid) {
 			System.out.println("This card is invalid. Pick another card to play");
 			return false;
@@ -236,7 +246,17 @@ public class GameState {
 	 */
 	private void processNonWildCard(Card played) {
 		String playedSymbol = played.getSymbol();
-		cardToMatch = played;
+		
+		// check if the card is a number card
+		// reference: 
+		// https://stackoverflow.com/questions/1102891/how-to-check-if-a-string-is-numeric-in-java
+		boolean isNumeric = playedSymbol.chars().allMatch( Character::isDigit );
+		// if the card is not a number card, i,e. a special card
+		if (!isNumeric) {
+			// store the current cardToMatch as cardBeforeSpecial
+			cardBeforeSpecial = cardToMatch;
+		}
+		
 		if (playedSymbol.equals("skip")) {
 			incrementCurrentPlayer();
 		} else if (playedSymbol.equals("draw two")) {
@@ -247,6 +267,9 @@ public class GameState {
 			Collections.reverse(allPlayers);
 			Collections.reverse(drawPenalty);
 		}
+		
+		// update cardToMatch
+		cardToMatch = played;
 	}
 
 	/**
@@ -286,6 +309,8 @@ public class GameState {
 	 * @param symbol the symbol of the wild card
 	 */
 	private void processWildCard(String symbol) {
+		// store the current cardToMatch as cardBeforeSpecial
+		cardBeforeSpecial = cardToMatch;
 		while(true) {
 			System.out.println("plase choose the next color to be matched");
 			System.out.println
@@ -341,17 +366,32 @@ public class GameState {
 	 * Check if the card played is valid by comparing color and symbol
 	 * @param cardToMatch the card to match
 	 * @param cardPlayed the card played by the player
+	 * @param cardBeforeSpcial the last card before special cards
 	 * @return return if the card is valid
 	 */
-	public static boolean checkCardValidity(Card cardToMatch, Card cardPlayed) {
+	public static boolean checkCardValidity(Card cardToMatch, Card cardBeforeSpcial,
+												Card cardPlayed) {
 		// wild cards are always valid
-		if (Card.isWild(cardPlayed)) {
+		if (cardPlayed.isWild()) {
 			return true;
 		}
 		// cardPlayed need to have the same symbol or color
 		boolean colorMatch = (cardPlayed.getColor() == cardToMatch.getColor());
 		boolean symbolMatch = (cardPlayed.getSymbol() == cardToMatch.getSymbol());
-		return colorMatch || symbolMatch;
+		boolean validNormal = colorMatch || symbolMatch;
+		
+		// if cardBeforeSpecial is not null and cardToMatch is a special card
+		// check if card played match card before special
+		if (!cardToMatch.isNumber() && cardBeforeSpcial != null) {
+			// store the current cardToMatch as cardBeforeSpecial
+			boolean colorMatchSpecial = (cardPlayed.getColor() == 
+											cardBeforeSpcial.getColor());
+			boolean symbolMatchSpecial = (cardPlayed.getSymbol() == 
+											cardBeforeSpcial.getSymbol());
+			return colorMatchSpecial || symbolMatchSpecial || validNormal;
+		}
+		
+		return validNormal;
 	}
 
 	

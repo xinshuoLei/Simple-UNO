@@ -47,10 +47,12 @@ public class Player {
 	 * @param drawPile copy of draw pile in game state class
 	 * @param numCards number of cards to draw
 	 * @param canPlay true if the card drawn can be played after 
-	 * @param cardToMatch if the card can be played, check against cardToMatch to see if it is valid
+	 * @param cardToMatch used to check if the card is valid if it can be played
+	 * @param cardBeforeSpecial  to check if the card is valid if it can be played
 	 * @return the card drawn if it can be played immediately after drawn, otherwise return null
 	 */
-	public Card drawCard(List<Card> drawPile, int numCards, boolean canPlay, Card cardToMatch) {
+	public Card drawCard(List<Card> drawPile, int numCards, boolean canPlay, 
+			Card cardToMatch, Card cardBeforeSpecial) {
 		Card cardDrawn = drawPile.get(0);
 		// update stack
 		for (int i = 0; i < numCards; i++) {
@@ -58,7 +60,8 @@ public class Player {
 		}
 		if (canPlay) {
 			// if the card drawn matches cardToMatch, it must be played
-			boolean mustPlay = GameState.checkCardValidity(cardToMatch, cardDrawn);
+			boolean mustPlay = GameState.checkCardValidity(cardToMatch, 
+													cardBeforeSpecial, cardDrawn);
 			if (mustPlay) {
 				return cardDrawn;
 			}
