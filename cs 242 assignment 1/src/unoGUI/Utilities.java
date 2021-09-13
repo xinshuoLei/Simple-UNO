@@ -29,10 +29,10 @@ public class Utilities {
 			 
 			 // try getting the uno logo from the url
 			 URL url = new URL(path);
-	         BufferedImage logo = ImageIO.read(url);
+			 BufferedImage logo = ImageIO.read(url);
 	         
 	         // scale the image
-	         Image scaled_logo = logo.getScaledInstance(width, height,
+			 Image scaled_logo = logo.getScaledInstance(width, height,
 	        		 Image.SCALE_SMOOTH);
 	         
 			 JLabel picLabel = new JLabel(new ImageIcon(scaled_logo));
