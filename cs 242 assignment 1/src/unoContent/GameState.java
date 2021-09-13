@@ -91,17 +91,19 @@ public class GameState {
 	
 	
 	/**
-	 * Function that check if the game should end, 
+	 * Function that check if the has a winner yet
 	 * i.e. a player has 0 cards in hand
-	 * @return true if the game should end
+	 * @return the winner of the game, -1 if the game doesn't have a winner
 	 */
-	public boolean shouldEndGame() {
+	public int checkWinner() {
+		int index = 0;
 		for (Player onePlayer : allPlayers) {
 			if (onePlayer.getStack().size() == 0) {
-				return true;
+				return index;
 			}
+			index += 1;
 		}
-		return false;
+		return -1;
 	}
 	
 	

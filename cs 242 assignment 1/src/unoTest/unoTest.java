@@ -244,7 +244,7 @@ class unoTest {
 		Player SecondPlayer = state.getAllPlayers().get(1);
 		SecondPlayer.setStack(new ArrayList<Card>());
 		
-		assertEquals(true, state.shouldEndGame(), "shouldEnd Game should return true  if a player has no card in hand");
+		assertNotEquals(-1, state.checkWinner(), "shouldEnd Game should return true  if a player has no card in hand");
 	}
 	
 	@Test
@@ -258,7 +258,7 @@ class unoTest {
 		Player FirstPlayer = state.getAllPlayers().get(0);
 		FirstPlayer.setStack(new ArrayList<Card>(testPile1));
 		
-		assertEquals(false, state.shouldEndGame(), "shouldEnd Game should return false if all players have card");
+		assertEquals(-1, state.checkWinner(), "shouldEnd Game should return false if all players have card");
 	}
 	
 	@Test
