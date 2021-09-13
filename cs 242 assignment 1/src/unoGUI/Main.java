@@ -16,7 +16,8 @@ public class Main {
 		/**
 		 * A list of player names used for testing GUI
 		 */
-		List<String> testPlayerList1 = new ArrayList<>(Arrays.asList("Player 1", "Player2", "Player3"));
+		List<String> testPlayerList1 = new ArrayList<>(Arrays.asList("Player 1", 
+				"Player2", "Player3"));
 		
 		if (args[0].equals("start")) {
 			try {

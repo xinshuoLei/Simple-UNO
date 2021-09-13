@@ -31,7 +31,7 @@ public class Utilities {
 			 URL url = new URL(path);
 			 BufferedImage logo = ImageIO.read(url);
 	         
-	         // scale the image
+			 // scale the image
 			 Image scaled_logo = logo.getScaledInstance(width, height,
 	        		 Image.SCALE_SMOOTH);
 	         

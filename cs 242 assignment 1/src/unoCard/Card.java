@@ -7,6 +7,53 @@ package unoCard;
 public abstract class Card {
 	
 	/**
+	 * constant for the symbol of a skip card
+	 */
+	public static String SKIP = "skip";
+	
+	/**
+	 * constant for the symbol of a reverse card
+	 */
+	public static String REVERSE = "reverse";
+	
+	/**
+	 * constant for the symbol of a draw two card
+	 */
+	public static String DRAW2 = "draw two";
+	
+	/**
+	 * constant for the symbol of a wild card
+	 */
+	public static String WILD = "wild";
+	
+	/**
+	 * constant for the symbol of a wild draw four card
+	 */
+	public static String WILD_DRAW4 = "wild draw four";
+	
+	/**
+	 * constant for the color yellow
+	 */
+	public static String YELLOW = "yellow";
+	
+	/**
+	 * constant for the color red
+	 */
+	public static String RED = "red";
+	
+	
+	/**
+	 * constant for the color blue
+	 */
+	public static String BLUE = "blue";
+	
+	
+	/**
+	 * constant for the color green
+	 */
+	public static String GREEN = "green";
+	
+	/**
 	 * The symbol of the card, including 0-9, reverse, draw two, wild, and wild draw four
 	 */
 	private String symbol;

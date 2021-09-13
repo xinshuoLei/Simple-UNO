@@ -51,7 +51,7 @@ public class GameState {
 	/**
 	 * Array of all possible colors of uno card
 	 */
-	private String[] allColors = {"yellow", "red", "green", "blue"};
+	private String[] allColors = {Card.YELLOW, Card.RED, Card.GREEN, Card.BLUE};
 	
 	/**
 	 * The card to match in each turn. 
@@ -203,11 +203,11 @@ public class GameState {
 			return false;
 		}
 		
-		if (playedSymbol.equals("wild")) {
-			processWildCard("wild");
-		} else if (playedSymbol.equals("wild draw four")) {
+		if (playedSymbol.equals(Card.WILD)) {
+			processWildCard(Card.WILD);
+		} else if (playedSymbol.equals(Card.WILD_DRAW4)) {
 			// process wild feature of the card first
-			processWildCard("wild draw four");
+			processWildCard(Card.WILD_DRAW4);
 			// record the penalty of drawing four cards for next player
 			int penalty = 4;
 			stackPenalty(penalty);
@@ -238,13 +238,13 @@ public class GameState {
 			if (played == null) {
 				// if player has no card to play, apply penalty
 				applyPenalty = true;
-			} else if (cardToMatch.getSymbol().equals("draw two") && 
-					!played.getSymbol().equals("draw two")) {
+			} else if (cardToMatch.getSymbol().equals(Card.DRAW2) && 
+					!played.getSymbol().equals(Card.DRAW2)) {
 				// if last card is draw two
 				// execute penalty if the player doesn't play a draw two card
 				applyPenalty = true;
-			} else if (cardToMatch.getSymbol().equals("wild draw four") && 
-					!played.getSymbol().equals("wild draw four")) {
+			} else if (cardToMatch.getSymbol().equals(Card.WILD_DRAW4) && 
+					!played.getSymbol().equals(Card.WILD_DRAW4)) {
 				// if last card is draw two
 				// execute penalty if the player doesn't play a draw two card
 				applyPenalty = true;
@@ -270,13 +270,13 @@ public class GameState {
 			cardBeforeSpecial = cardToMatch;
 		}
 		
-		if (playedSymbol.equals("skip")) {
+		if (playedSymbol.equals(Card.SKIP)) {
 			incrementCurrentPlayer();
-		} else if (playedSymbol.equals("draw two")) {
+		} else if (playedSymbol.equals(Card.DRAW2)) {
 			// record the penalty of drawing two cards for next player
 			int penalty = 2;
 			stackPenalty(penalty);
-		} else if (playedSymbol.equals("reverse")) {
+		} else if (playedSymbol.equals(Card.REVERSE)) {
 			Collections.reverse(allPlayers);
 			Collections.reverse(drawPenalty);
 		}
@@ -371,13 +371,13 @@ public class GameState {
 			for (int y = 0; y < 2; y++) {
 				// two reverse card, two skip cards 
 				// and two draw two cards for each color
-				drawPile.add(new ReverseCard("reverse", allColors[x]));
-				drawPile.add(new SkipCard("skip", allColors[x]));
-				drawPile.add(new DrawTwoCard("draw two", allColors[x]));
+				drawPile.add(new ReverseCard(Card.REVERSE, allColors[x]));
+				drawPile.add(new SkipCard(Card.SKIP, allColors[x]));
+				drawPile.add(new DrawTwoCard(Card.DRAW2, allColors[x]));
 			}
 			// four wild card and four wild draw four cards
-			drawPile.add(new WildCard("wild", null));
-			drawPile.add(new WildCard("wild draw four", null));
+			drawPile.add(new WildCard(Card.WILD, null));
+			drawPile.add(new WildCard(Card.WILD_DRAW4, null));
 		}
 	
 	}
