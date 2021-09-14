@@ -17,6 +17,9 @@ import unoCard.WildCard;
 import unoGameLogic.GameState;
 import unoGameLogic.Player;
 
+/**
+ * class for in game GUI
+ */
 public class InGame {
 	
 	/**
@@ -308,6 +311,7 @@ public class InGame {
 		
 		for (int i = 0; i < stack.size(); i++) {
 			if (i % maxCardInRow == 0) {
+				// reach maximum number of cards in a row
 				// should create a new row
 				cardY += yMargin;
 				cardX = firstCardX;
@@ -315,7 +319,7 @@ public class InGame {
 			String url = constructCardUrl(stack.get(i));
 			Utilities.displayImageFromUrl(panel, CARD_WIDTH, CARD_HEIGHT, 
 					cardX, cardY, url);
-			// add margin to x
+			// add margin to x so next card can be placed in right position
 			cardX += xMargin;
 		}
 		

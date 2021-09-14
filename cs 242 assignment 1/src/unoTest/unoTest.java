@@ -14,10 +14,16 @@ import unoCard.WildCard;
 import unoGameLogic.GameState;
 import unoGameLogic.Player;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.*;
 
 
-// test cases for uno
+/**
+ * Unit tests for uno game logic 
+ * set user input reference:
+ * https://stackoverflow.com/questions/6415728/junit-testing-with-simulated-user-input 
+ */
 class unoTest {
 	
 	// test cards piles
@@ -411,12 +417,16 @@ class unoTest {
 		// process a wild card
 		state.processCardPlayed(new WildCard(Card.WILD, null));
 		// print updated cardToMatch
+		System.out.print("cardToMatch is: ");
 		state.getCardToMatch().printCard();
 		System.out.println();
 	}
 	
 	@Test
 	@DisplayName("Check effect of a vaid card")
+	/*
+	 * included custom rule split draw
+	 */
 	void testValidNormalNumberCard() {
 		List<String> playerNames = new ArrayList<>(testPlayerList2);
 		GameState state = new GameState(playerNames);
@@ -433,6 +443,9 @@ class unoTest {
 	
 	@Test
 	@DisplayName("Check effect of a vaid draw two card - without stack")
+	/*
+	 * included custom rule split draw
+	 */
 	void testValidDrawTwoCardNoStack() {
 		List<String> playerNames = new ArrayList<>(testPlayerList3);
 		GameState state = new GameState(playerNames);
@@ -491,6 +504,39 @@ class unoTest {
 	}
 	
 	@Test
+	@DisplayName("Check effect of a valid wild draw four card - no stacking")
+	void testValidWildDrawFour() {
+		System.out.println("output of testValidWildDrawFour(): ");
+		List<String> playerNames = new ArrayList<>(testPlayerList3);
+		GameState state = new GameState(playerNames);
+		state.initializePlayerStack();
+	
+		// set current player to 1
+		state.setCurrentPlayer(1);
+		
+		// set input to 0, meaning the user chose yellow as the next color
+		// backup System.in to restore it later
+		InputStream sysInBackup = System.in; 
+		ByteArrayInputStream in = new ByteArrayInputStream("\n0".getBytes());
+		System.setIn(in);
+		
+		// process a wild draw four card
+		Card played = new WildCard(Card.WILD_DRAW4, null);
+		state.processCardPlayed(played);
+		
+		// next player should have a penalty of four
+		assertEquals(4, state.getDrawPenalty().get(2), "next player should get a draw "
+				+ "penalty of 4");
+		
+		// cardToMatch should be set to wild draw four, yellow
+		Card expectedCardToMatch = new WildCard(Card.WILD_DRAW4, Card.YELLOW);
+		assertEquals(true, cardIsEqual(state.getCardToMatch(), expectedCardToMatch));
+		System.setIn(sysInBackup);
+		System.out.println("");
+	}
+	
+	
+	@Test
 	@DisplayName("player draw a card and is able to play it")
 	void testDrawAndPlay() {
 		List<String> playerNames = new ArrayList<>(testPlayerList1);
@@ -508,5 +554,37 @@ class unoTest {
 		// so cardToMatch should be updated
 		assertEquals(true, cardIsEqual(testPile1.get(0), state.getCardToMatch()), 
 				"player should play the card and it should be processed");
+	}
+	
+	@Test
+	@DisplayName("Check special rule: cardBefore Special") 
+	void testCardBeforeSpecial() {
+		List<String> playerNames = new ArrayList<>(testPlayerList3);
+		GameState state = new GameState(playerNames);
+		
+		// set cardToMatch so preceding card can be processed
+		state.setCardToMatch(new NumberCard("1", Card.BLUE));
+		
+		// Process a blue skip card first
+		Card firstCard = new SkipCard(Card.SKIP, Card.BLUE);
+		state.processCardPlayed(firstCard);
+		
+		// then process a red skip card
+		Card secondCard = new SkipCard(Card.SKIP, Card.RED);
+		state.processCardPlayed(secondCard);
+		
+		// cardToMatch should be red skip 
+		// and cardBeforeSpecial should be blue skip
+		assertEquals(true, cardIsEqual(secondCard, state.getCardToMatch()),
+				"cardToMatch should be updated when a valid card is played");
+		assertEquals(true, cardIsEqual(firstCard, state.getCardBeforeSpecial()),
+				"cardBeforeSpecial should be updtaed after a special card is played");
+		
+		// process another card: blue 5, this should be processed successfully
+		Card thirdCard = new NumberCard("5", Card.BLUE);
+		state.processCardPlayed(thirdCard);
+		assertEquals(true, cardIsEqual(thirdCard, state.getCardToMatch()),
+				"card matching cardBeforeSpecial should be processed after a "
+				+ "special card is played");
 	}
 }

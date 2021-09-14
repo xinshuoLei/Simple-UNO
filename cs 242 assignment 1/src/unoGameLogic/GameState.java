@@ -461,6 +461,9 @@ public class GameState {
 		return drawPenalty;
 	}
 
-	
+	public Card getCardBeforeSpecial() {
+		return cardBeforeSpecial;
+	}
+
 
 }
