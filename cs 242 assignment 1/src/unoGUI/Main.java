@@ -32,10 +32,21 @@ public class Main {
 			// print out the card to match for manual test
 			System.out.println("top card in the discard pile is: ");
 			state.getCardToMatch().printCard();
+			// formatting
+			System.out.println("");
+			
+			// print out other state info for manual test
+			int currentPlayerIndex = state.getCurrentPlayer();
+			Player player = state.getAllPlayers().get(currentPlayerIndex);
+			System.out.println("current player is: " + player.getName());
+			List<Integer> drawPenalty = state.getDrawPenalty();
+			System.out.println("draw penalty for current player is: " 
+					+ drawPenalty.get(currentPlayerIndex) + "\n");
 			
 			// make current player draw three card to test display stack
-			int currentPlayerIndex = state.getCurrentPlayer();
 			Player currentPlayer = state.getAllPlayers().get(currentPlayerIndex);
+			
+			
 			
 			for (int i = 0; i < 3; i++) {
 				currentPlayer.drawCard(new ArrayList<>(state.getDrawPile()), 1, 
@@ -49,6 +60,8 @@ public class Main {
 			for (Card oneCard : currentPlayer.getStack()) {
 				oneCard.printCard();
 			}
+			
+			
 			
 			// display in game GUI
 			new InGame(state);
