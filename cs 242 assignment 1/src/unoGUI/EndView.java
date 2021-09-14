@@ -1,15 +1,6 @@
 package unoGUI;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.net.URL;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
@@ -72,7 +63,7 @@ public class EndView {
 	
 	/**
 	 * Display a trophy image from url
-	 * @param endPanel
+	 * @param endPanel JPanel for end GUI
 	 */
 	private void displayTrophy(JPanel endPanel) {
 		String trophyUrl = 

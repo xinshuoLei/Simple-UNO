@@ -10,6 +10,10 @@ import unoCard.DrawTwoCard;
 import unoGameLogic.GameState;
 import unoGameLogic.Player;
 
+/**
+ * Main class
+ * used for GUI and main game loop
+ */
 public class Main {
 
 	public static void main(String[] args){
@@ -20,6 +24,7 @@ public class Main {
 		List<String> testPlayerList1 = new ArrayList<>(Arrays.asList("Player 1", 
 				"Player2", "Player3"));
 		
+		// run different GUI based on argument
 		if (args[0].equals("start")) {
 			
 			new StartView();
@@ -45,9 +50,6 @@ public class Main {
 			
 			// make current player draw three card to test display stack
 			Player currentPlayer = state.getAllPlayers().get(currentPlayerIndex);
-			
-			
-			
 			for (int i = 0; i < 3; i++) {
 				currentPlayer.drawCard(new ArrayList<>(state.getDrawPile()), 1, 
 						false, null, null);
@@ -60,8 +62,6 @@ public class Main {
 			for (Card oneCard : currentPlayer.getStack()) {
 				oneCard.printCard();
 			}
-			
-			
 			
 			// display in game GUI
 			new InGame(state);

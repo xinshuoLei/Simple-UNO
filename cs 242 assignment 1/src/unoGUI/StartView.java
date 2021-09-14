@@ -1,16 +1,7 @@
 package unoGUI;
 
-import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.URL;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -69,7 +60,6 @@ public class StartView {
 	
 	/**
 	 * Constructor of the StartView class
-	 * @throws IOException
 	 */
 	public StartView() {
 		JFrame start = new JFrame("UNO");

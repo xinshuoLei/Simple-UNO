@@ -2,7 +2,6 @@ package unoGUI;
 
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.Panel;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 
@@ -12,6 +11,10 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * Utilities class that contain functions that add components to GUI
+ * Functions are used by StartView, InGame, EndView
+ */
 public class Utilities {
 	/**
 	  * Display an image

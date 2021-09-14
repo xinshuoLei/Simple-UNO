@@ -1,10 +1,5 @@
 package unoGUI;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Panel;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -13,7 +8,6 @@ import javax.swing.JTextField;
 
 
 import unoCard.Card;
-import unoCard.WildCard;
 import unoGameLogic.GameState;
 import unoGameLogic.Player;
 
