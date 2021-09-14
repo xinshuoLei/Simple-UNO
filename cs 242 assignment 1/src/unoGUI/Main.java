@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import unoCard.Card;
+import unoCard.DrawTwoCard;
 import unoGameLogic.GameState;
 import unoGameLogic.Player;
 
@@ -20,14 +21,38 @@ public class Main {
 				"Player2", "Player3"));
 		
 		if (args[0].equals("start")) {
-			try {
-				new StartView();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
+			new StartView();
+			
 		} else if (args[0].equals("in_game")) {
-			new InGame();
+			
+			GameState state = new GameState(new ArrayList<>(testPlayerList1));
+			state.initializePlayerStack();
+			
+			// print out the card to match for manual test
+			System.out.println("top card in the discard pile is: ");
+			state.getCardToMatch().printCard();
+			
+			// make current player draw three card to test display stack
+			int currentPlayerIndex = state.getCurrentPlayer();
+			Player currentPlayer = state.getAllPlayers().get(currentPlayerIndex);
+			
+			for (int i = 0; i < 3; i++) {
+				currentPlayer.drawCard(new ArrayList<>(state.getDrawPile()), 1, 
+						false, null, null);
+				// remove card drawn from draw pile
+				state.getDrawPile().remove(0);
+			}
+			
+			// print out the stack for manual test 
+			System.out.println("current player's stack is: ");
+			for (Card oneCard : currentPlayer.getStack()) {
+				oneCard.printCard();
+			}
+			
+			// display in game GUI
+			new InGame(state);
+			
 		} else if (args[0].equals("end")) {
 			// Create a new game state for testing purpose
 			GameState state = new GameState(new ArrayList<>(testPlayerList1));

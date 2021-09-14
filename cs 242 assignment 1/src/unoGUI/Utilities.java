@@ -29,13 +29,13 @@ public class Utilities {
 			 
 			 // try getting the uno logo from the url
 			 URL url = new URL(path);
-			 BufferedImage logo = ImageIO.read(url);
+			 BufferedImage image = ImageIO.read(url);
 	         
 			 // scale the image
-			 Image scaled_logo = logo.getScaledInstance(width, height,
+			 Image scaled_image = image.getScaledInstance(width, height,
 	        		 Image.SCALE_SMOOTH);
 	         
-			 JLabel picLabel = new JLabel(new ImageIcon(scaled_logo));
+			 JLabel picLabel = new JLabel(new ImageIcon(scaled_image));
 			 
 			 // add image to startPanel
 			 panel.add(picLabel);
@@ -64,14 +64,14 @@ public class Utilities {
 	 
 	 
 	 /**
-	  * Display a text with custom font size
+	  * Display a text with custom font size in the middle of the screen
 	  * @param panel JPanel of the window
 	  * @param text the string to display
 	  * @param fontSize 
 	  * @param windowWidth width of the window, so that text can be placed in the middle
 	  * @param locationY y-coordination of the image
 	  */
-	 public static void displayText(JPanel panel, String text, float fontSize, 
+	 public static void displayTextInMiddle(JPanel panel, String text, float fontSize, 
 			 int windowWidth, int locationY) {
 		 // text prompt
 		 JLabel inputPrompt = new JLabel(text);
@@ -82,6 +82,27 @@ public class Utilities {
 		 Dimension promptDimension = inputPrompt.getPreferredSize();
 		 inputPrompt.setSize(promptDimension);
 		 int locationX = (windowWidth- promptDimension.width) / 2;
+		 inputPrompt.setLocation(locationX, locationY);
+	 }
+	 
+	 /**
+	  * Display a text with custom font size
+	  * @param panel JPanel of the window
+	  * @param text the string to display
+	  * @param fontSize 
+	  * @param windowWidth width of the window, so that text can be placed in the middle
+	  * @param locationY y-coordination of the image
+	  */
+	 public static void displayText(JPanel panel, String text, float fontSize, 
+			 int locationX, int locationY) {
+		 // text prompt
+		 JLabel inputPrompt = new JLabel(text);
+		 panel.add(inputPrompt);
+		 
+		 // make font size larger
+		 inputPrompt.setFont(inputPrompt.getFont().deriveFont(fontSize));
+		 Dimension promptDimension = inputPrompt.getPreferredSize();
+		 inputPrompt.setSize(promptDimension);
 		 inputPrompt.setLocation(locationX, locationY);
 	 }
 	 

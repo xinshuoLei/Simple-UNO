@@ -24,72 +24,64 @@ public class StartView {
 	/**
 	 * constant for font size
 	 */
-	private float FONT_SIZE = 20;
+	private final float FONT_SIZE = 20;
 	
 	/**
 	 * constant for window width
 	 */
-	private int START_WINDOW_WIDTH = 1000;
+	private final int START_WINDOW_WIDTH = 1000;
 	
 	/**
 	 * constant for window height
 	 */
-	private int START_WINDOW_HEIGHT = 800;
+	private final int START_WINDOW_HEIGHT = 800;
 	
 	/**
 	 * constant for button width
 	 */
-	private int BUTTON_WIDTH = 150;
+	private final int BUTTON_WIDTH = 150;
 	
 	/**
 	 * constant for button height
 	 */
-	private int BUTTON_HEIGHT = 50;
+	private final int BUTTON_HEIGHT = 50;
 	
 	/**
 	 * constant for image height
 	 */
-	private int IMAGE_WIDTH = 300;
+	private final int IMAGE_WIDTH = 300;
 	
 	/**
 	 * constant for image height
 	 */
-	private int IMAGE_HEIGHT = 260;
+	private final int IMAGE_HEIGHT = 260;
 	
 	/**
 	 * constant for text height
 	 */
-	private int TEXT_WIDTH = 100;
+	private final int INPUT_WIDTH = 100;
 	
 	/**
 	 * constant for text height
 	 */
-	private int TEXT_HEIGHT = 30;
+	private final int INPUT_HEIGHT = 30;
 	
 	
 	/**
 	 * Constructor of the StartView class
 	 * @throws IOException
 	 */
-	public StartView() throws IOException {
+	public StartView() {
 		JFrame start = new JFrame("UNO");
 		start.setSize(START_WINDOW_WIDTH, START_WINDOW_HEIGHT);
 		JPanel startPanel = Utilities.initializePanel(START_WINDOW_WIDTH,
 				START_WINDOW_HEIGHT);
 		
 		// add start game button to startPanel
-		String buttonText = "start game";
-		int buttonX = (START_WINDOW_WIDTH - BUTTON_WIDTH) / 2;
-		int buttonY = 550;
-		Utilities.addButton(startPanel, buttonText, BUTTON_WIDTH, BUTTON_HEIGHT, 
-				buttonX, buttonY);
+		addStartButton(startPanel);
 		
 		// add uno logo via url
-		int imageX = (START_WINDOW_WIDTH - IMAGE_WIDTH) / 2;
-	    int imageY = 100;
-	    String logoUrl = "https://i.dlpng.com/static/png/6905409_preview.png";
-		Utilities.displayImageFromUrl(startPanel, IMAGE_WIDTH, IMAGE_HEIGHT, 
-				imageX, imageY, logoUrl);
+		displayUnoLogo(startPanel);
 		
 		// add input prompt and input box
 		initializeInput(startPanel);
@@ -97,6 +89,31 @@ public class StartView {
 		start.setContentPane(startPanel);
         start.setVisible(true);
         start.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+
+	/**
+	 * Display uno logo from url
+	 * @param startPanel JPanel for start GUI
+	 */
+	private void displayUnoLogo(JPanel startPanel) {
+		int imageX = (START_WINDOW_WIDTH - IMAGE_WIDTH) / 2;
+	    int imageY = 100;
+	    String logoUrl = "https://i.dlpng.com/static/png/6905409_preview.png";
+		Utilities.displayImageFromUrl(startPanel, IMAGE_WIDTH, IMAGE_HEIGHT, 
+				imageX, imageY, logoUrl);
+	}
+
+	
+	/**
+	 * Add start button to the panel
+	 * @param startPanel JPanel for start GUI
+	 */
+	private void addStartButton(JPanel startPanel) {
+		String buttonText = "start game";
+		int buttonX = (START_WINDOW_WIDTH - BUTTON_WIDTH) / 2;
+		int buttonY = 550;
+		Utilities.addButton(startPanel, buttonText, BUTTON_WIDTH, BUTTON_HEIGHT, 
+				buttonX, buttonY);
 	}
 	
 	 
@@ -110,11 +127,11 @@ public class StartView {
 		 // input box
 		 JTextField playerNum = new JTextField(10);
 		 startPanel.add(playerNum);
-		 playerNum.setSize(TEXT_WIDTH,TEXT_HEIGHT);
-		 playerNum.setLocation((START_WINDOW_WIDTH - TEXT_WIDTH) / 2,460);
+		 playerNum.setSize(INPUT_WIDTH,INPUT_HEIGHT);
+		 playerNum.setLocation((START_WINDOW_WIDTH - INPUT_WIDTH) / 2,460);
 		 
 		 String inputPromt = "Please enter the number of players";
-		 Utilities.displayText(startPanel, inputPromt, FONT_SIZE, START_WINDOW_WIDTH, 400);
+		 Utilities.displayTextInMiddle(startPanel, inputPromt, FONT_SIZE, START_WINDOW_WIDTH, 400);
 	 }
 
 

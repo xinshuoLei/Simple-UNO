@@ -12,32 +12,35 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * Class that construct the GUI for end game view
+ */
 public class EndView {
 	
 	/**
 	 * constant for font size
 	 */
-	private float FONT_SIZE = 20;
+	private final float FONT_SIZE = 20;
 	
 	/**
 	 * constant for window width
 	 */
-	private int END_WINDOW_WIDTH = 1000;
+	private final int END_WINDOW_WIDTH = 1000;
 	
 	/**
 	 * constant for window height
 	 */
-	private int END_WINDOW_HEIGHT = 800;
+	private final int END_WINDOW_HEIGHT = 800;
 	
 	/**
 	 * constant for image height
 	 */
-	private int IMAGE_WIDTH = 300;
+	private final int IMAGE_WIDTH = 300;
 	
 	/**
 	 * constant for image height
 	 */
-	private int IMAGE_HEIGHT = 300;
+	private final int IMAGE_HEIGHT = 300;
 	
 	/**
 	 * winner of the uno game
@@ -57,12 +60,21 @@ public class EndView {
 				END_WINDOW_HEIGHT);
 		
 		// display winner prompt
-		String winnerPrompt = "The winner is " + winner + "!" ;
-		int promptY = 520;
-		Utilities.displayText(endPanel, winnerPrompt, FONT_SIZE, 
-				END_WINDOW_WIDTH, promptY);
+		displayWinner(endPanel);
 		
 		// display a trophy image
+		displayTrophy(endPanel);
+		
+		endView.setContentPane(endPanel);
+		endView.setVisible(true);
+		endView.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	
+	/**
+	 * Display a trophy image from url
+	 * @param endPanel
+	 */
+	private void displayTrophy(JPanel endPanel) {
 		String trophyUrl = 
 		"https://media.istockphoto.com/vectors/vector-flat-golden-trophy-vector-"
 		+ "id1176397624?k=20&m=1176397624&s=612x612&w=0&h=yICH7de39SwB1sDP4-kBHFS"
@@ -72,9 +84,16 @@ public class EndView {
 		int imageY = 150;
 		Utilities.displayImageFromUrl(endPanel, IMAGE_WIDTH, IMAGE_HEIGHT, 
 				imageX, imageY, trophyUrl);
-		
-		endView.setContentPane(endPanel);
-		endView.setVisible(true);
-		endView.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	
+	/**
+	 * Display current game's winner
+	 * @param endPanel JPanel for end GUI
+	 */
+	private void displayWinner(JPanel endPanel) {
+		String winnerPrompt = "The winner is " + winner + "!" ;
+		int promptY = 520;
+		Utilities.displayTextInMiddle(endPanel, winnerPrompt, FONT_SIZE, 
+				END_WINDOW_WIDTH, promptY);
 	}
 }
