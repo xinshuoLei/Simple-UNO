@@ -14,7 +14,7 @@ import unoGameLogic.Player;
 /**
  * class for in game GUI
  */
-public class InGame {
+public class InGame extends GUI {
 	
 	/**
 	 * constant for font size
@@ -92,7 +92,7 @@ public class InGame {
 		// TODO Auto-generated constructor stub
 		JFrame inGame = new JFrame("In Game");
 		inGame.setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
-		JPanel inGamePanel = Utilities.initializePanel(WINDOW_WIDTH, 
+		JPanel inGamePanel = initializePanel(WINDOW_WIDTH, 
 				WINDOW_HEIGHT);
 
 		displayDrawPile(inGamePanel);
@@ -121,7 +121,7 @@ public class InGame {
 		String whiteImageUrl = "https://www.macmillandictionary.com/external/"
 				+ "slideshow/full/White_full.png";
 		int area_height = 350;
-		Utilities.displayImageFromUrl(panel, WINDOW_WIDTH, area_height, 
+		displayImageFromUrl(panel, WINDOW_WIDTH, area_height, 
 				0, 0, whiteImageUrl);
 	}
 	
@@ -135,14 +135,14 @@ public class InGame {
 		int cardBackSize= 150;
 		int cardLocationX = 100;
 		int cardLocationY = 80;
-		Utilities.displayImageFromUrl(panel, cardBackSize, cardBackSize, cardLocationX, 
+		displayImageFromUrl(panel, cardBackSize, cardBackSize, cardLocationX, 
 				cardLocationY, cardBackUrl);
 		
 		// display text indicating it's draw pile
 		String drawPilePrompt = "draw pile";
 		int promptX = 125;
 		int promptY = 270;
-		Utilities.displayText(panel, drawPilePrompt, FONT_SIZE, promptX, promptY);
+		displayText(panel, drawPilePrompt, FONT_SIZE, promptX, promptY);
 	}
 	
 	/**
@@ -154,12 +154,12 @@ public class InGame {
 	private void addNonPlayButton(JPanel panel) {		
 		String skip = "skip";
 		int skipY = 650;
-		Utilities.addButton(panel, skip, BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X,
+		addButton(panel, skip, BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X,
 				skipY);
 		
 		String hideReveal = "hide/reveal cards";
 		int hideRevealY = 700;
-		Utilities.addButton(panel, hideReveal, BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X,
+		addButton(panel, hideReveal, BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X,
 				hideRevealY);
 	}
 	
@@ -173,12 +173,12 @@ public class InGame {
 	private void addPlayInteraction(JPanel panel) {
 		String play = "play card";
 		int playY = 550;
-		Utilities.addButton(panel, play, BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X,
+		addButton(panel, play, BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X,
 				playY);
 		
 		String playWild = "play wild card";
 		int playWildY = 500;
-		Utilities.addButton(panel, playWild, BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X,
+		addButton(panel, playWild, BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X,
 				playWildY);
 		
 		// input box for color when player wants to play wild card
@@ -192,7 +192,7 @@ public class InGame {
 		String wildInstruction = "To play a wild card, enter color choice in "
 				+ "the input box above play wild card button, then click play wild card";
 		int instructcionY = 370;
-		Utilities.displayTextInMiddle(panel, wildInstruction, FONT_SIZE, WINDOW_WIDTH, 
+		displayTextInMiddle(panel, wildInstruction, FONT_SIZE, WINDOW_WIDTH, 
 				instructcionY);
 	}
 	
@@ -240,14 +240,14 @@ public class InGame {
 		int width = 100;
 		int cardToMatchX = 370;
 		int cardToMatchY = 80;
-		Utilities.displayImageFromUrl(panel, width, height, cardToMatchX, 
+		displayImageFromUrl(panel, width, height, cardToMatchX, 
 				cardToMatchY, cardUrl);
 		
 		// display a prompt indicating it is the card to match
 		String prompt = "top card in discard pile";
 		int promptX = 330;
 		int promptY = 250;
-		Utilities.displayText(panel, prompt, FONT_SIZE, promptX, promptY);
+		displayText(panel, prompt, FONT_SIZE, promptX, promptY);
 		
 		// display color to match for the case where cardToMatch is wild card
 		// check against null to prevent first card to match is wild
@@ -255,7 +255,7 @@ public class InGame {
 			String colorToMatch = "color to match:   " + cardToMatch.getColor();
 			int colorToMatchX = 330;
 			int colorToMatchY = 290;
-			Utilities.displayText(panel, colorToMatch, FONT_SIZE, colorToMatchX, 
+			displayText(panel, colorToMatch, FONT_SIZE, colorToMatchX, 
 					colorToMatchY);
 		}
 	}
@@ -272,7 +272,7 @@ public class InGame {
 		// display name
 		int currentPlayerX = 650;
 		int currentPlayerY = 80;
-		Utilities.displayText(panel, currentPlayerPromopt, FONT_SIZE, 
+		displayText(panel, currentPlayerPromopt, FONT_SIZE, 
 				currentPlayerX, currentPlayerY);
 		
 		// get currentPlayer's drawPenalty
@@ -281,7 +281,7 @@ public class InGame {
 		String penaltyPrompt = "draw penalty for current player:   " + penalty;
 		int penaltyX = 650;
 		int penaltyY = 120;
-		Utilities.displayText(panel, penaltyPrompt, FONT_SIZE, penaltyX, 
+		displayText(panel, penaltyPrompt, FONT_SIZE, penaltyX, 
 				penaltyY);
 	}
 	
@@ -311,7 +311,7 @@ public class InGame {
 				cardX = firstCardX;
 			}
 			String url = constructCardUrl(stack.get(i));
-			Utilities.displayImageFromUrl(panel, CARD_WIDTH, CARD_HEIGHT, 
+			displayImageFromUrl(panel, CARD_WIDTH, CARD_HEIGHT, 
 					cardX, cardY, url);
 			// add margin to x so next card can be placed in right position
 			cardX += xMargin;

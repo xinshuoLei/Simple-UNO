@@ -6,7 +6,7 @@ import javax.swing.JPanel;
 /**
  * Class that construct the GUI for end game view
  */
-public class EndView {
+public class EndView extends GUI {
 	
 	/**
 	 * constant for font size
@@ -47,7 +47,7 @@ public class EndView {
 		winner = setWinner;
 		JFrame endView = new JFrame("End");
 		endView.setSize(END_WINDOW_WIDTH,END_WINDOW_HEIGHT);
-		JPanel endPanel = Utilities.initializePanel(END_WINDOW_WIDTH, 
+		JPanel endPanel = initializePanel(END_WINDOW_WIDTH, 
 				END_WINDOW_HEIGHT);
 		
 		// display winner prompt
@@ -73,7 +73,7 @@ public class EndView {
 		
 		int imageX = (END_WINDOW_WIDTH - IMAGE_WIDTH) / 2;
 		int imageY = 150;
-		Utilities.displayImageFromUrl(endPanel, IMAGE_WIDTH, IMAGE_HEIGHT, 
+		displayImageFromUrl(endPanel, IMAGE_WIDTH, IMAGE_HEIGHT, 
 				imageX, imageY, trophyUrl);
 	}
 	
@@ -84,7 +84,7 @@ public class EndView {
 	private void displayWinner(JPanel endPanel) {
 		String winnerPrompt = "The winner is " + winner + "!" ;
 		int promptY = 520;
-		Utilities.displayTextInMiddle(endPanel, winnerPrompt, FONT_SIZE, 
+		displayTextInMiddle(endPanel, winnerPrompt, FONT_SIZE, 
 				END_WINDOW_WIDTH, promptY);
 	}
 }

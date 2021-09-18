@@ -6,6 +6,7 @@ package unoCard;
 
 public abstract class Card {
 	
+	
 	/**
 	 * constant for the symbol of a skip card
 	 */
@@ -102,7 +103,7 @@ public abstract class Card {
 	 * @return true if the card is wild
 	 */
 	public boolean isWild() {
-		if (symbol.equals("wild") || symbol.equals("wild draw four")) {
+		if (symbol.equals(WILD) || symbol.equals(WILD_DRAW4)) {
 			return true;
 		}
 		return false;

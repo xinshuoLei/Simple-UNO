@@ -10,7 +10,7 @@ import javax.swing.JTextField;
  * reference: 
  * https://wiki.illinois.edu/wiki/display/cs242/Graphical+User+Interface+Example
  */
-public class StartView {
+public class StartView extends GUI {
 	
 	/**
 	 * constant for font size
@@ -64,7 +64,7 @@ public class StartView {
 	public StartView() {
 		JFrame start = new JFrame("UNO");
 		start.setSize(START_WINDOW_WIDTH, START_WINDOW_HEIGHT);
-		JPanel startPanel = Utilities.initializePanel(START_WINDOW_WIDTH,
+		JPanel startPanel = initializePanel(START_WINDOW_WIDTH,
 				START_WINDOW_HEIGHT);
 		
 		// add start game button to startPanel
@@ -77,7 +77,7 @@ public class StartView {
 		initializeInput(startPanel);
 		
 		start.setContentPane(startPanel);
-        start.setVisible(true);
+		start.setVisible(true);
         start.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
@@ -89,7 +89,7 @@ public class StartView {
 		int imageX = (START_WINDOW_WIDTH - IMAGE_WIDTH) / 2;
 	    int imageY = 100;
 	    String logoUrl = "https://i.dlpng.com/static/png/6905409_preview.png";
-		Utilities.displayImageFromUrl(startPanel, IMAGE_WIDTH, IMAGE_HEIGHT, 
+		displayImageFromUrl(startPanel, IMAGE_WIDTH, IMAGE_HEIGHT, 
 				imageX, imageY, logoUrl);
 	}
 
@@ -102,7 +102,7 @@ public class StartView {
 		String buttonText = "start game";
 		int buttonX = (START_WINDOW_WIDTH - BUTTON_WIDTH) / 2;
 		int buttonY = 550;
-		Utilities.addButton(startPanel, buttonText, BUTTON_WIDTH, BUTTON_HEIGHT, 
+		addButton(startPanel, buttonText, BUTTON_WIDTH, BUTTON_HEIGHT, 
 				buttonX, buttonY);
 	}
 	
@@ -121,7 +121,7 @@ public class StartView {
 		 playerNum.setLocation((START_WINDOW_WIDTH - INPUT_WIDTH) / 2,460);
 		 
 		 String inputPromt = "Please enter the number of players";
-		 Utilities.displayTextInMiddle(startPanel, inputPromt, FONT_SIZE, START_WINDOW_WIDTH, 400);
+		 displayTextInMiddle(startPanel, inputPromt, FONT_SIZE, START_WINDOW_WIDTH, 400);
 	 }
 
 
