@@ -17,6 +17,7 @@ public class StrategicAIPlayer extends Player {
 	 */
 	public StrategicAIPlayer(int setIndex) {
 		super(setIndex);
+		setAiType(STRATEGIC_AI);
 	}
 	
 	/**

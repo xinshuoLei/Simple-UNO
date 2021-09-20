@@ -179,7 +179,7 @@ public class StartView extends GUI {
 	  * @param startPanel JPanel of the start window
 	  */
 	 private void addAISelection(JPanel startPanel) {
-		 String[] aiTypes = {Player.NO_AI, Player.BASELINE_AI, Player.STRATEGIC_AI};
+		 String[] aiTypes = {Player.NOT_AI, Player.BASELINE_AI, Player.STRATEGIC_AI};
 		 // text prompt
 		 String aiTypePrompt = "Please select the type of AI players";
 		 int aiTypePromptY = 530;

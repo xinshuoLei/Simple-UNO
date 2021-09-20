@@ -234,7 +234,7 @@ public class GameState {
 		currentPlayer_.removeCardFromStack(played);
 			
 		// next player's turn
-		incrementCurrentPlayer();
+		// incrementCurrentPlayer();
 		return true;
 	}
 	
@@ -326,7 +326,7 @@ public class GameState {
 	/**
 	 * increment the variable currentPlayer to indicate it it next player's turn
 	 */
-	private void incrementCurrentPlayer() {
+	public void incrementCurrentPlayer() {
 		if (currentPlayer == allPlayers.size() - 1) {
 			// if the currentPlayer is the last player in allPlayers
 			// next player will be the first player in allPlayers
@@ -484,6 +484,10 @@ public class GameState {
 
 	public Card getCardBeforeSpecial() {
 		return cardBeforeSpecial;
+	}
+
+	public void setCardBeforeSpecial(Card cardBeforeSpecial) {
+		this.cardBeforeSpecial = cardBeforeSpecial;
 	}
 
 

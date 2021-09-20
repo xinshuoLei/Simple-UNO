@@ -1,5 +1,6 @@
 package unoGUI;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,6 +8,7 @@ import java.util.List;
 
 import unoCard.Card;
 import unoCard.DrawTwoCard;
+import unoCard.NumberCard;
 import unoGameLogic.GameState;
 import unoGameLogic.Player;
 
@@ -81,6 +83,11 @@ public class Main {
 		}
 		*/
 		new StartControl();
-		
+		/**
+		GameState state = new GameState(0,2, Player.BASELINE_AI);
+		state.initializePlayerStack();
+		state.setCardBeforeSpecial(new NumberCard("3", Card.BLUE));
+		new InGameView(state);
+		*/
 	}
 }

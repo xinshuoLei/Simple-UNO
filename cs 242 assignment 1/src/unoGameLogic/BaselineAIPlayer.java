@@ -10,6 +10,7 @@ import unoCard.Card;
 public class BaselineAIPlayer extends Player{
 	public BaselineAIPlayer(int setIndex) {
 		super(setIndex);
+		setAiType(BASELINE_AI);
 	}
 	
 	/**

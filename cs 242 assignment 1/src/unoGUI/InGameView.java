@@ -1,11 +1,16 @@
 package unoGUI;
 
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 
 import unoCard.Card;
 import unoGameLogic.GameState;
@@ -77,89 +82,145 @@ public class InGameView extends GUI {
 	private final String WILD_URL = "wildchange";
 	
 	/**
-	 * corresponing GameState instance
+	 * JFrame for InGameView
 	 */
-	private GameState state = null;
+	private JFrame frame;
+	
+	/**
+	 * JLabel for the draw pile
+	 */
+	private JLabel drawPile;
+	
+	/**
+	 * Skip button
+	 */
+	private JButton skipButton;
+	
+	/**
+	 * hide/reveal button
+	 */
+	private JButton hideRevealButton;
+	
+	/**
+	 * play card button
+	 */
+	private JButton playButton;
+	
+	/**
+	 * play wild card button
+	 */
+	private JButton playWildButton;
+	
+	/**
+	 * JLabel for cardToMatch
+	 */
+	private JLabel cardToMatch;
+	
+	/**
+	 * JComboBox for card selection
+	 */
+	private JComboBox cardSelection;
+	
+	
+	/**
+	 * JLabels that need to be updated
+	 */
+	private List<JLabel> updatedJLabel = new ArrayList<JLabel>();
+	
+	/**
+	 * Main JPanel
+	 */
+	private JPanel inGamePanel;
+	
+	/**
+	 * List that contain all JLabels for cards in the stack
+	 */
+	private List<JLabel> stackJLabels = new ArrayList<>();
 	
 	 /**
-	 * Constructor of the StartView class
-	 * @param setState the game state for the current GUI
-	 */
-	public InGameView(GameState setState) {
+	  * Constructor of the InGameView class
+	  * @param cardToMatch card to match
+	  * @param cafdBeforeSpecial card before special
+	  * @param stack stack of current player
+	  * @param currentPlayer name of current player
+	  * @param drawPenalty draw penalty of current player
+	  */
+	public InGameView(Card cardToMatch, Card cardBeforeSpecial, List<Card> stack,
+			String currentPlayer, int drawPenalty, int playerNum, String playerAI) {
 		
-		state = setState;
-		
-		// TODO Auto-generated constructor stub
-		JFrame inGame = new JFrame("In Game");
-		inGame.setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
-		JPanel inGamePanel = initializePanel(WINDOW_WIDTH, 
+		frame = new JFrame("In Game");
+		frame.setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
+		inGamePanel = initializePanel(WINDOW_WIDTH, 
 				WINDOW_HEIGHT);
 
-		displayDrawPile(inGamePanel);
+		displayDrawPile();
+		displayPlayerNum(playerNum);
 		
-		addNonPlayButton(inGamePanel);
-		addPlayInteraction(inGamePanel);
+		addNonPlayButton();
+		addPlayButtonAndInstruction();
 		
-		displayCardToMatch(inGamePanel); 
-		displayStateInfo(inGamePanel);
+		displayCardToMatch(cardToMatch);
+		displayCardBeforeSpecial(cardBeforeSpecial);
+		displayStateInfo(currentPlayer, drawPenalty, playerAI);
 		
-		displayStack(inGamePanel);
+		displayStack(stack);
+		addCardSelection(stack);
+		addColorSelection();
 
-		initializeGameArea(inGamePanel);
+		initializeGameArea();
 		
-		inGame.setContentPane(inGamePanel);
-		inGame.setVisible(true);
-		inGame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setContentPane(inGamePanel);
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	
 	/**
 	 * Initialize the game area by displaying a white image
-	 * @param panel the JPanel for in game GUI
 	 */
-	private void initializeGameArea(JPanel panel) {
+	public void initializeGameArea() {
 		String whiteImageUrl = "https://www.macmillandictionary.com/external/"
 				+ "slideshow/full/White_full.png";
 		int area_height = 350;
-		displayImageFromUrl(panel, WINDOW_WIDTH, area_height, 
+		JLabel area = displayImageFromUrl(inGamePanel, WINDOW_WIDTH, area_height, 
 				0, 0, whiteImageUrl);
+		updatedJLabel.add(area);
 	}
 	
 	/**
 	 * Display an image for draw pile and add a text prompt
 	 * @param panel the JPanel for in game GUI
 	 */
-	private void displayDrawPile(JPanel panel) {
+	private void displayDrawPile() {
 		String cardBackUrl = "https://s.catch.com.au/images/product/0002/2181/"
 				+ "5983faa7563cb163730529.jpg";
 		int cardBackSize= 150;
 		int cardLocationX = 100;
 		int cardLocationY = 80;
-		displayImageFromUrl(panel, cardBackSize, cardBackSize, cardLocationX, 
+		drawPile = displayImageFromUrl(inGamePanel, cardBackSize, cardBackSize, cardLocationX, 
 				cardLocationY, cardBackUrl);
 		
 		// display text indicating it's draw pile
 		String drawPilePrompt = "draw pile";
 		int promptX = 125;
 		int promptY = 270;
-		displayText(panel, drawPilePrompt, FONT_SIZE, promptX, promptY);
+		displayText(inGamePanel, drawPilePrompt, FONT_SIZE, promptX, promptY);
 	}
 	
 	/**
 	 * Add buttons not related to playing card
 	 * including skip button and hide/reveal button
-	 * @param panel the JPanel for in game GUI
 	 */
 	
-	private void addNonPlayButton(JPanel panel) {		
+	private void addNonPlayButton() {		
 		String skip = "skip";
 		int skipY = 650;
-		addButton(panel, skip, BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X,
+		skipButton = addButton(inGamePanel, skip, BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X,
 				skipY);
 		
 		String hideReveal = "hide/reveal cards";
 		int hideRevealY = 700;
-		addButton(panel, hideReveal, BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X,
+		hideRevealButton = addButton(inGamePanel, hideReveal, BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X,
 				hideRevealY);
 	}
 	
@@ -167,32 +228,19 @@ public class InGameView extends GUI {
 	 * Add interactions related to play card
 	 * including play card button, play wild card button, 
 	 * input color box for wild card 
-	 * @param panel the JPanel for in game GUI
 	 */
 	
-	private void addPlayInteraction(JPanel panel) {
+	private void addPlayButtonAndInstruction() {
 		String play = "play card";
-		int playY = 550;
-		addButton(panel, play, BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X,
+		int playY = 580;
+		playButton = addButton(inGamePanel, play, BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X,
 				playY);
 		
-		String playWild = "play wild card";
-		int playWildY = 500;
-		addButton(panel, playWild, BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X,
-				playWildY);
-		
-		// input box for color when player wants to play wild card
-		// input box
-		JTextField colorInput = new JTextField(10);
-		panel.add(colorInput);
-		colorInput.setSize(BUTTON_WIDTH,INPUT_HEIGHT);
-		colorInput.setLocation(BUTTON_X,450);
-		
 		// display instruction
-		String wildInstruction = "To play a wild card, enter color choice in "
-				+ "the input box above play wild card button, then click play wild card";
+		String wildInstruction = "To play a wild card, select a color first"
+				+ " then select a card and click play card";
 		int instructcionY = 370;
-		displayTextInMiddle(panel, wildInstruction, FONT_SIZE, WINDOW_WIDTH, 
+		displayTextInMiddle(inGamePanel, wildInstruction, FONT_SIZE, WINDOW_WIDTH, 
 				instructcionY);
 	}
 	
@@ -231,23 +279,23 @@ public class InGameView extends GUI {
 	
 	/**
 	 * Display the card to match, i.e. last card in discard pile
-	 * @param panel the JPanel for in game GUI
+	 * @param cardToMatch card to match
 	 */
-	private void displayCardToMatch(JPanel panel) {
-		Card cardToMatch = state.getCardToMatch();
+	public void displayCardToMatch(Card cardToMatch) {
 		String cardUrl = constructCardUrl(cardToMatch);
 		int height = 150;
 		int width = 100;
 		int cardToMatchX = 370;
 		int cardToMatchY = 80;
-		displayImageFromUrl(panel, width, height, cardToMatchX, 
-				cardToMatchY, cardUrl);
+		JLabel cardToMatchLabel = displayImageFromUrl(inGamePanel, width, height, 
+				cardToMatchX, cardToMatchY, cardUrl);
+		updatedJLabel.add(cardToMatchLabel);
 		
 		// display a prompt indicating it is the card to match
 		String prompt = "top card in discard pile";
 		int promptX = 330;
 		int promptY = 250;
-		displayText(panel, prompt, FONT_SIZE, promptX, promptY);
+		displayText(inGamePanel, prompt, FONT_SIZE, promptX, promptY);
 		
 		// display color to match for the case where cardToMatch is wild card
 		// check against null to prevent first card to match is wild
@@ -255,53 +303,66 @@ public class InGameView extends GUI {
 			String colorToMatch = "color to match:   " + cardToMatch.getColor();
 			int colorToMatchX = 330;
 			int colorToMatchY = 290;
-			displayText(panel, colorToMatch, FONT_SIZE, colorToMatchX, 
+			JLabel colorLabel = displayText(inGamePanel, colorToMatch, FONT_SIZE, colorToMatchX, 
 					colorToMatchY);
+			updatedJLabel.add(colorLabel);
 		}
 	}
 	
 	/**
 	 * Display state info, including current player and draw penalty
-	 * @param panel the JPanel for in game GUI
+	 * @param currentPlayer current player 
+	 * @param drawPenalty draw penalty of the current player
 	 */
-	private void displayStateInfo(JPanel panel) {
-		// get current player's name
-		List<Player> allPlayer = state.getAllPlayers();
-		Player currentPlayer = allPlayer.get(state.getCurrentPlayer());
-		String currentPlayerPromopt = "current player:   " + currentPlayer.getName();
+	public void displayStateInfo(String currentPlayer, int penalty,
+			String playerAI) {
+		String currentPlayerPromopt = null;
+		if (playerAI.equals(Player.NOT_AI)) {
+			currentPlayerPromopt = "current player:   " + currentPlayer;
+		} else {
+			currentPlayerPromopt = "current player:   " + currentPlayer 
+				+ " (" + playerAI + " AI)";
+		}
 		// display name
 		int currentPlayerX = 650;
-		int currentPlayerY = 80;
-		displayText(panel, currentPlayerPromopt, FONT_SIZE, 
+		int currentPlayerY = 120;
+		JLabel currentPlayerLabel = displayText(inGamePanel, currentPlayerPromopt, FONT_SIZE, 
 				currentPlayerX, currentPlayerY);
+		updatedJLabel.add(currentPlayerLabel);
 		
 		// get currentPlayer's drawPenalty
-		List<Integer> drawPenalty = state.getDrawPenalty();
-		int penalty = drawPenalty.get(state.getCurrentPlayer());
 		String penaltyPrompt = "draw penalty for current player:   " + penalty;
 		int penaltyX = 650;
-		int penaltyY = 120;
-		displayText(panel, penaltyPrompt, FONT_SIZE, penaltyX, 
+		int penaltyY = 160;
+		JLabel penaltyLabel = displayText(inGamePanel, penaltyPrompt, FONT_SIZE, penaltyX, 
 				penaltyY);
+		updatedJLabel.add(penaltyLabel);
+		
+	}
+
+	/**
+	 * Function that display total number of players
+	 * @param playerNum number of players
+	 */
+	private void displayPlayerNum(int playerNum) {
+		// display total number of players
+		String numPlayerPrompt = "number of players:   " + playerNum;
+		displayText(inGamePanel, numPlayerPrompt, FONT_SIZE, 650, 
+				80);
 	}
 	
 	/**
 	 * Display current player's stack
 	 * every row contains a maximum of 7 cards
-	 * @param panel the JPanel for in game GUI
+	 * @param stack stack of current player
 	 */
-	private void displayStack(JPanel panel) {
+	public void displayStack(List<Card> stack) {
 		int maxCardInRow = 7;
 		int firstCardX = 100;
 		int xMargin = 80;
 		int yMargin = 100;
 		int cardY = 330;
 		int cardX = 100;
-		
-		// get player's stack
-		List<Player> allPlayer = state.getAllPlayers();
-		Player currentPlayer = allPlayer.get(state.getCurrentPlayer());
-		List<Card> stack = currentPlayer.getStack();
 		
 		for (int i = 0; i < stack.size(); i++) {
 			if (i % maxCardInRow == 0) {
@@ -311,11 +372,104 @@ public class InGameView extends GUI {
 				cardX = firstCardX;
 			}
 			String url = constructCardUrl(stack.get(i));
-			displayImageFromUrl(panel, CARD_WIDTH, CARD_HEIGHT, 
+			JLabel card = displayImageFromUrl(inGamePanel, CARD_WIDTH, CARD_HEIGHT, 
 					cardX, cardY, url);
+			stackJLabels.add(card);
 			// add margin to x so next card can be placed in right position
 			cardX += xMargin;
 		}
 		
+	}
+	/**
+	 * Display cardBeforeSpecial
+	 * @param cardBeforeSpecial card before special
+	 */
+	public void displayCardBeforeSpecial(Card cardBeforeSpecial) {
+		// display a prompt
+		String prompt = "card before special: ";
+		displayText(inGamePanel, prompt, FONT_SIZE, 650, 200);
+		// display card before special
+		// display a message null if cardBeforeSpecial is null
+		if (cardBeforeSpecial == null) {
+			String none = "None";
+			JLabel textLabel = displayText(inGamePanel, none, FONT_SIZE, 820, 200);
+			updatedJLabel.add(textLabel);
+		} else {
+			String url = constructCardUrl(cardBeforeSpecial);
+			JLabel label = displayImageFromUrl(inGamePanel, 70, 110, 
+					840, 200, url);
+			updatedJLabel.add(label);
+		}
+	}
+	
+	/**
+	 * Add a drop down menu for player to select the card to play
+	 * @param stack stack of the current player
+	 */
+	public void addCardSelection(List<Card> stack) {
+		// display instruction
+		String prompt = "select card to play:";
+		displayText(inGamePanel, prompt, FONT_SIZE, BUTTON_X, 500);
+		String[] cardInfos = new String[stack.size()];
+		for (int i = 0; i < stack.size(); i++) {
+			cardInfos[i] = stack.get(i).getCardInfo();
+		}
+		cardSelection = addDropDown(inGamePanel, cardInfos, BUTTON_WIDTH, 
+				BUTTON_HEIGHT, BUTTON_X, 530);
+	}
+	
+	/**
+	 * Add a drop down menu for player to select color when playing wild card
+	 */
+	public void addColorSelection() {
+		// display instruction
+		String prompt = "select color:";
+		displayText(inGamePanel, prompt, FONT_SIZE, BUTTON_X, 420);
+		String na = "N/A";
+		String[] colors = {na, Card.YELLOW, Card.GREEN, Card.RED, Card.BLUE};
+		addDropDown(inGamePanel, colors, BUTTON_WIDTH, BUTTON_HEIGHT, 
+				BUTTON_X, 450);
+	}
+	
+	/**
+	 * Add a actionListener for the skip button
+	 * @param listener the listener to add 
+	 */
+	public void addSkipListener(ActionListener listener) {
+		skipButton.addActionListener(listener);
+	}
+	
+	/**
+	 * Add a actionListener for the hidE/Reveal button
+	 * @param listener the listener to add 
+	 */
+	public void addHideRevealListener(ActionListener listener) {
+		hideRevealButton.addActionListener(listener);
+	}
+
+
+
+	public List<JLabel> getStackJLabels() {
+		return stackJLabels;
+	}
+
+
+	public List<JLabel> getUpdatedJLabel() {
+		return updatedJLabel;
+	}
+
+
+	public JPanel getInGamePanel() {
+		return inGamePanel;
+	}
+
+
+	public void setInGamePanel(JPanel inGamePanel) {
+		this.inGamePanel = inGamePanel;
+	}
+
+
+	public JComboBox getCardSelection() {
+		return cardSelection;
 	}
 }

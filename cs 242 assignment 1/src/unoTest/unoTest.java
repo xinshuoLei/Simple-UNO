@@ -95,7 +95,7 @@ class unoTest {
 		GameState state = new GameState(0, 0, null);
 		Card firstCard = state.getDrawPile().get(0);
 		System.out.print("The first card is: ");
-		firstCard.printCard();
+		System.out.println(firstCard.getCardInfo());
 		System.out.println();
 	}
 
@@ -394,7 +394,7 @@ class unoTest {
 		state.setCardToMatch(new NumberCard("0", Card.BLUE));
 		// process a reverse card
 		state.processCardPlayed(new SkipCard(Card.SKIP, Card.BLUE));
-		
+		state.incrementCurrentPlayer();
 		assertEquals(true, state.getCurrentPlayer() == 1);
 	}
 	
@@ -456,11 +456,13 @@ class unoTest {
 		
 		// process a draw two card
 		Card played = new DrawTwoCard(Card.DRAW2, Card.BLUE);
+		state.incrementCurrentPlayer();
 		state.processCardPlayed(played);
 		
 		// the next player plays a card that is not draw two
 		// so this player need to draw two card and skip this turn
 		state.processCardPlayed(new NumberCard("4", Card.BLUE));
+		state.incrementCurrentPlayer();
 		assertEquals(player1InitialStack.size() + 1, player1InitialStack.size() + 1,  
 				"next player should draw one cards because of draw split");
 		assertEquals(1, state.getCurrentPlayer(), 
@@ -480,11 +482,12 @@ class unoTest {
 		// player1 plays draw two, so penalty for player2 and 3 should be 1 
 		Card played = new DrawTwoCard(Card.DRAW2, Card.YELLOW);
 		state.processCardPlayed(played);
-		
+		state.incrementCurrentPlayer();
 		// player2 plays another draw two
 		// penalty for player3 should be 1+1+1 = 3
 		// penalty for player4 should be 0+1 = 1
 		state.processCardPlayed(new DrawTwoCard(Card.DRAW2, Card.BLUE));
+		state.incrementCurrentPlayer();
 		List<Integer> penalty = state.getDrawPenalty();
 		
 		// penalty for player with index 1 should be 0

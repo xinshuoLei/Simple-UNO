@@ -10,6 +10,7 @@ public class HumanPlayer extends Player {
 	 */
 	public HumanPlayer(int setIndex) {
 		super(setIndex);
+		setAiType(NOT_AI);
 	}
 	
 	public void pickCard() {

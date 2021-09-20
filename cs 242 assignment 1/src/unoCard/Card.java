@@ -88,14 +88,16 @@ public abstract class Card {
 	
 	
 	/**
-	 * Function that print out card info. used for testing and debug
+	 * Function that get out card info. used for testing and debug
 	 */
-	public void printCard() {
+	public String getCardInfo() {
+		String info = "";
 		if (color != null) {
-			System.out.println(getSymbol() + " " + getColor());
+			info += getSymbol() + " " + getColor();
 		} else {
-			System.out.println(getSymbol());
+			info += getSymbol();
 		}
+		return info;
 	}
 	
 	/**

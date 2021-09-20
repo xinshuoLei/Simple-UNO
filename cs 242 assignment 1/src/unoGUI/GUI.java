@@ -24,15 +24,16 @@ public abstract class GUI {
 
 	/**
 	  * Display an image
+	  * reference: https://stackoverflow.com/questions/13448368/trying-to-display-url-image-in-jframe
 	  * @param panel JPanel of the window
 	  * @param width width of the image
 	  * @param height height of the image
 	  * @param locationX x-coordination of the image
 	  * @param locationY y-coordination of the image
 	  * @param path url of the image
-	  * reference: https://stackoverflow.com/questions/13448368/trying-to-display-url-image-in-jframe
+	  * @return JLabel created
 	  */
-	 public static void displayImageFromUrl(JPanel panel, int width , 
+	 public static JLabel displayImageFromUrl(JPanel panel, int width , 
 			 int height, int locationX, int locationY, String path){
 		 try {
 			 
@@ -50,11 +51,13 @@ public abstract class GUI {
 			 panel.add(picLabel);
 			 picLabel.setSize(width, height);
 			 picLabel.setLocation(locationX, locationY);
+			 return picLabel;
 			 
 			 // TODO: add action
 		 } catch (Exception e) {
 			 // print error message if exception occurs
 			 e.printStackTrace();
+			 return null;
 		 } 
 	 }
 	 
@@ -79,8 +82,9 @@ public abstract class GUI {
 	  * @param fontSize size of the font
 	  * @param windowWidth width of the window, so that text can be placed in the middle
 	  * @param locationY y-coordinate of the image
+	  * @return JLabel created
 	  */
-	 public static void displayTextInMiddle(JPanel panel, String text, float fontSize, 
+	 public static JLabel displayTextInMiddle(JPanel panel, String text, float fontSize, 
 			 int windowWidth, int locationY) {
 		 // text prompt
 		 JLabel inputPrompt = new JLabel(text);
@@ -92,6 +96,8 @@ public abstract class GUI {
 		 inputPrompt.setSize(promptDimension);
 		 int locationX = (windowWidth- promptDimension.width) / 2;
 		 inputPrompt.setLocation(locationX, locationY);
+		 
+		 return inputPrompt;
 	 }
 	 
 	 /**
@@ -101,8 +107,9 @@ public abstract class GUI {
 	  * @param fontSize size of the font
 	  * @param windowWidth width of the window, so that text can be placed in the middle
 	  * @param locationY y-coordinate of the image
+	  * @return JLabel created
 	  */
-	 public static void displayText(JPanel panel, String text, float fontSize, 
+	 public static JLabel displayText(JPanel panel, String text, float fontSize, 
 			 int locationX, int locationY) {
 		 // text prompt
 		 JLabel inputPrompt = new JLabel(text);
@@ -113,6 +120,8 @@ public abstract class GUI {
 		 Dimension promptDimension = inputPrompt.getPreferredSize();
 		 inputPrompt.setSize(promptDimension);
 		 inputPrompt.setLocation(locationX, locationY);
+		 
+		 return inputPrompt;
 	 }
 	 
 	/**

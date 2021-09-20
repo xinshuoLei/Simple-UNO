@@ -29,7 +29,7 @@ public abstract class Player {
 	/**
 	 * constant for no AI player
 	 */
-	public static final String NO_AI = "N/A";
+	public static final String NOT_AI = "N/A";
 	
 	/**
 	 * Each player's index in the list allPlayer in GameState class
@@ -40,6 +40,11 @@ public abstract class Player {
 	 * Each player's name, format: "Player" + index
 	 */
 	private String name;
+	
+	/**
+	 * Each player's ai type, for human players, this is set to NOT_AI
+	 */
+	private String aiType;
 	
 	/**
 	 * Each player's seven card in hand
@@ -217,6 +222,14 @@ public abstract class Player {
 
 	public void setColorToUse(String colorToUse) {
 		this.colorToUse = colorToUse;
+	}
+
+	public String getAiType() {
+		return aiType;
+	}
+
+	public void setAiType(String aiType) {
+		this.aiType = aiType;
 	}
 
 
