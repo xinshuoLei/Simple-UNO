@@ -53,6 +53,11 @@ public abstract class Player {
 	private Card cardToPlay = null;
 	
 	/**
+	 * Color selection for wild card
+	 */
+	private String colorToUse = null;
+	
+	/**
 	 * Map that maps the color of a card to how many cards of that color is in validCards
 	 * colors include red, blue, yellow, green, wild, and wild draw four  
 	 */
@@ -121,11 +126,6 @@ public abstract class Player {
 		}
 		return null;
 	}
-
-	/**
-	 * The function that sets cardToPlay
-	 */
-	public abstract void pickCard();
 	
 	/**
 	 * Find all cards that are valid to play in the current turn 
@@ -143,9 +143,11 @@ public abstract class Player {
 	}
 	
 	/**
-	 * Iterate through validCards, update CardToNumber
+	 * Iterate through cards, update CardToNumber
+	 * @param isValid if is valid is true, iterate through valid cards
+	 * else, iterate through stack
 	 */
-	public void updateCardToNumber() {
+	public void updateCardToNumber(boolean isValid) {
 		// first set all values to 0
 		colorToNumber.put(Card.BLUE, 0);
 		colorToNumber.put(Card.YELLOW, 0);
@@ -154,7 +156,15 @@ public abstract class Player {
 		colorToNumber.put(Card.WILD, 0);
 		colorToNumber.put(Card.WILD_DRAW4, 0);
 		
-		for (Card oneCard : validCards) {
+		List<Card> toIterate = null;
+		
+		if (isValid) {
+			toIterate = validCards;
+		} else {
+			toIterate = stack;
+		}
+		
+		for (Card oneCard : toIterate) {
 			String color = oneCard.getColor();
 			// for wild cards, colors are set to their symbol
 			if (color == null) {
@@ -164,6 +174,14 @@ public abstract class Player {
 			colorToNumber.replace(color, currNumber + 1);
 		}
 	}
+	
+	/**
+	 * The function that sets cardToPlay
+	 */
+	public abstract void pickCard();
+	
+	public abstract void pickColorForWild();
+	
 	
 	/**
 	 * functions below are getters and setters
@@ -191,6 +209,14 @@ public abstract class Player {
 
 	public Map<String, Integer> getColorToNumber() {
 		return colorToNumber;
+	}
+
+	public String getColorToUse() {
+		return colorToUse;
+	}
+
+	public void setColorToUse(String colorToUse) {
+		this.colorToUse = colorToUse;
 	}
 
 

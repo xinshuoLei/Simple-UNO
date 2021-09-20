@@ -344,6 +344,7 @@ public class GameState {
 	private void processWildCard(String symbol) {
 		// store the current cardToMatch as cardBeforeSpecial
 		cardBeforeSpecial = cardToMatch;
+		/**
 		while(true) {
 			System.out.println("plase choose the next color to be matched");
 			System.out.println
@@ -363,6 +364,13 @@ public class GameState {
 			}
 			// for invalid input, ask the user to try again
 		}
+		*/
+		Player currentPlayerObj = allPlayers.get(currentPlayer);
+		String colorChoice = currentPlayerObj.getColorToUse();
+		// set cardToMatch to account for 
+		// the fact last played card is wild draw four
+		// and the color player selected
+		cardToMatch = new WildCard(symbol, colorChoice);
 	}
 
 	/**

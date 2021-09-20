@@ -384,7 +384,7 @@ class unoTest {
 	}
 	
 	@Test
-	@DisplayName("Check effect of a wild card")
+	@DisplayName("Check effect of a skip card")
 	void testValidSkip() {
 		GameState state = new GameState(3, 0, null);
 		
@@ -401,17 +401,22 @@ class unoTest {
 	@Test
 	@DisplayName("Check effect of a wild card")
 	void testValidWild() {
-		System.out.println("output of testValidWild(): ");
 		GameState state = new GameState(2, 0, null);
 		
 		// set cardToMatch so we can know if it is updated
 		state.setCardToMatch(new NumberCard("3", Card.BLUE));
+		
+		// set color choice for wild card
+		int currentPlayer = state.getCurrentPlayer();
+		Player player = state.getAllPlayers().get(currentPlayer);
+		player.setColorToUse(Card.RED);
+		
 		// process a wild card
 		state.processCardPlayed(new WildCard(Card.WILD, null));
-		// print updated cardToMatch
-		System.out.print("cardToMatch is: ");
-		state.getCardToMatch().printCard();
-		System.out.println();
+		
+		// cardToMatch should be set to wild, red
+		Card expectedCardToMatch = new WildCard(Card.WILD, Card.RED);
+		assertEquals(true, cardIsEqual(state.getCardToMatch(), expectedCardToMatch));
 	}
 	
 	@Test
@@ -494,18 +499,16 @@ class unoTest {
 	@Test
 	@DisplayName("Check effect of a valid wild draw four card - no stacking")
 	void testValidWildDrawFour() {
-		System.out.println("output of testValidWildDrawFour(): ");
 		GameState state = new GameState(4, 0, null);
 		state.initializePlayerStack();
 	
 		// set current player to 1
 		state.setCurrentPlayer(1);
 		
-		// set input to 0, meaning the user chose yellow as the next color
-		// backup System.in to restore it later
-		InputStream sysInBackup = System.in; 
-		ByteArrayInputStream in = new ByteArrayInputStream("\n0".getBytes());
-		System.setIn(in);
+		// set color choice for wild card
+		int currentPlayer = state.getCurrentPlayer();
+		Player player = state.getAllPlayers().get(currentPlayer);
+		player.setColorToUse(Card.YELLOW);
 		
 		// process a wild draw four card
 		Card played = new WildCard(Card.WILD_DRAW4, null);
@@ -518,7 +521,6 @@ class unoTest {
 		// cardToMatch should be set to wild draw four, yellow
 		Card expectedCardToMatch = new WildCard(Card.WILD_DRAW4, Card.YELLOW);
 		assertEquals(true, cardIsEqual(state.getCardToMatch(), expectedCardToMatch));
-		System.setIn(sysInBackup);
 		System.out.println("");
 	}
 	
