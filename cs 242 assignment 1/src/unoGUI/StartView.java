@@ -1,9 +1,19 @@
 package unoGUI;
 
+import java.awt.event.ActionListener;
 import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeListener;
+
+import unoGameLogic.Player;
 
 /**
  * Class for the start view of the uno game
@@ -15,7 +25,7 @@ public class StartView extends GUI {
 	/**
 	 * constant for font size
 	 */
-	private final float FONT_SIZE = 20;
+	private final float FONT_SIZE = 15;
 	
 	/**
 	 * constant for window width
@@ -48,22 +58,51 @@ public class StartView extends GUI {
 	private final int IMAGE_HEIGHT = 260;
 	
 	/**
-	 * constant for text height
+	 * constant for spinner height
 	 */
-	private final int INPUT_WIDTH = 100;
+	private final int INPUT_WIDTH = 50;
 	
 	/**
-	 * constant for text height
+	 * constant for spinner height
 	 */
-	private final int INPUT_HEIGHT = 30;
+	private final int INPUT_HEIGHT = 40;
 	
+	/**
+	 * constant for maximum number of players
+	 */
+	private final int MAXIMUM_PLAYER = 15;
+	
+	/**
+	 * start button
+	 */
+	private JButton startButton;
+	
+	/**
+	 * JSpinner for number of human players
+	 */
+	private JSpinner numHumanPlayer;
+	
+	/**
+	 * JSpinner for number of ai players
+	 */
+	private JSpinner numAIPlayer;
+	
+	/**
+	 * JComboxBox for AI type selection
+	 */
+	private JComboBox aiType;
+	
+	/**
+	 * JFrame for startView
+	 */
+	JFrame frame;
 	
 	/**
 	 * Constructor of the StartView class
 	 */
 	public StartView() {
-		JFrame start = new JFrame("UNO");
-		start.setSize(START_WINDOW_WIDTH, START_WINDOW_HEIGHT);
+		frame = new JFrame("UNO");
+		frame.setSize(START_WINDOW_WIDTH, START_WINDOW_HEIGHT);
 		JPanel startPanel = initializePanel(START_WINDOW_WIDTH,
 				START_WINDOW_HEIGHT);
 		
@@ -73,12 +112,14 @@ public class StartView extends GUI {
 		// add uno logo via url
 		displayUnoLogo(startPanel);
 		
-		// add input prompt and input box
-		initializeInput(startPanel);
+		// add spinner for player number input
+		initializePlayerNum(startPanel);
 		
-		start.setContentPane(startPanel);
-		start.setVisible(true);
-        start.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		addAISelection(startPanel);
+		
+		frame.setContentPane(startPanel);
+		frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	/**
@@ -87,7 +128,7 @@ public class StartView extends GUI {
 	 */
 	private void displayUnoLogo(JPanel startPanel) {
 		int imageX = (START_WINDOW_WIDTH - IMAGE_WIDTH) / 2;
-	    int imageY = 100;
+	    int imageY = 80;
 	    String logoUrl = "https://i.dlpng.com/static/png/6905409_preview.png";
 		displayImageFromUrl(startPanel, IMAGE_WIDTH, IMAGE_HEIGHT, 
 				imageX, imageY, logoUrl);
@@ -101,8 +142,8 @@ public class StartView extends GUI {
 	private void addStartButton(JPanel startPanel) {
 		String buttonText = "start game";
 		int buttonX = (START_WINDOW_WIDTH - BUTTON_WIDTH) / 2;
-		int buttonY = 550;
-		addButton(startPanel, buttonText, BUTTON_WIDTH, BUTTON_HEIGHT, 
+		int buttonY = 620;
+		startButton = addButton(startPanel, buttonText, BUTTON_WIDTH, BUTTON_HEIGHT, 
 				buttonX, buttonY);
 	}
 	
@@ -113,16 +154,72 @@ public class StartView extends GUI {
 	  * reference: https://www.geeksforgeeks.org/java-swing-jtextfield/
 	  */
 	 
-	 private void initializeInput(JPanel startPanel) {
-		 // input box
-		 JTextField playerNum = new JTextField(10);
-		 startPanel.add(playerNum);
-		 playerNum.setSize(INPUT_WIDTH,INPUT_HEIGHT);
-		 playerNum.setLocation((START_WINDOW_WIDTH - INPUT_WIDTH) / 2,460);
+	 private void initializePlayerNum(JPanel startPanel) {
+		 // text prompt for number of human players
+		 String numHumanPromt = "Please select the number of human players";
+		 int humanPromptY = 400;
+		 displayText(startPanel, numHumanPromt, FONT_SIZE, 270, humanPromptY);
+		 // spinner for selecting number of human players
+		 SpinnerNumberModel humanPlayer = new SpinnerNumberModel(0, 0, MAXIMUM_PLAYER, 1);
+		 numHumanPlayer = addSpinner(startPanel, humanPlayer, INPUT_WIDTH, INPUT_HEIGHT, 670, 
+				 humanPromptY - 10);
 		 
-		 String inputPromt = "Please enter the number of players";
-		 displayTextInMiddle(startPanel, inputPromt, FONT_SIZE, START_WINDOW_WIDTH, 400);
+		 // text prompt for number of human players
+		 String numAIPromt = "Please select the number of AI players";
+		 int aiPromptY = 460;
+		 displayText(startPanel, numAIPromt, FONT_SIZE, 270, aiPromptY);
+		 // spinner for selecting number of human players
+		 SpinnerNumberModel aiPlayer = new SpinnerNumberModel(0, 0, MAXIMUM_PLAYER, 1);
+		 numAIPlayer = addSpinner(startPanel, aiPlayer, INPUT_WIDTH, INPUT_HEIGHT, 670, 
+				aiPromptY - 10);		 
+	 }
+	 
+	 /**
+	  * add the drop down menu for AI type selection
+	  * @param startPanel JPanel of the start window
+	  */
+	 private void addAISelection(JPanel startPanel) {
+		 String[] aiTypes = {Player.NO_AI, Player.BASELINE_AI, Player.STRATEGIC_AI};
+		 // text prompt
+		 String aiTypePrompt = "Please select the type of AI players";
+		 int aiTypePromptY = 530;
+		 displayText(startPanel, aiTypePrompt, FONT_SIZE, 270, aiTypePromptY);
+		 aiType = addDropDown(startPanel, aiTypes, 100 , INPUT_HEIGHT, 620, 
+				 aiTypePromptY - 10);
+ 	 }
+	 
+	 /**
+	  * Function that add a listener for start button
+	  * @param startButtonListener actionListener for start button
+	  */
+	 public void addStartButtonListener(ActionListener startButtonListener) {
+		 startButton.addActionListener(startButtonListener);
+	 }
+	 
+	 /**
+	  * Function that add a listener for ai type drop down menu
+	  * @param aiTypeListener actionListener for ai types menu
+	  */
+	 public void addAITypeListener(ActionListener aiTypeListener) {
+		 aiType.addActionListener(aiTypeListener);
+	 }
+	 
+	 /**
+	  * Function that add a listener for number of human player JSpinner
+	  * @param humanNumListener actionListener for JSpinner numHumanPlayers
+	  */
+	 public void addHumanNumListener(ChangeListener humanNumListener) {
+		 numHumanPlayer.addChangeListener(humanNumListener);
+	 }
+	 /**
+	  * Function that add a listener for number of AI player JSpinner
+	  * @param aiNumListener actionListener for JSpinner numAIPlayers
+	  */
+	 public void addAINumListener(ChangeListener aiNumListener) {
+		 numAIPlayer.addChangeListener(aiNumListener);
 	 }
 
-
+	public JFrame getFrame() {
+		return frame;
+	}
 }

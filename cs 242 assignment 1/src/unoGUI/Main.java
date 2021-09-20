@@ -19,11 +19,6 @@ public class Main {
 	public static void main(String[] args){
 		
 		/**
-		 * A list of player names used for testing GUI
-		 */
-		List<String> testPlayerList1 = new ArrayList<>(Arrays.asList("Player 1", 
-				"Player2", "Player3"));
-		
 		// run different GUI based on argument
 		if (args[0].equals("start")) {
 			
@@ -31,7 +26,7 @@ public class Main {
 			
 		} else if (args[0].equals("in_game")) {
 			
-			GameState state = new GameState(new ArrayList<>(testPlayerList1));
+			GameState state = new GameState(3, 0, null);
 			state.initializePlayerStack();
 			
 			// print out the card to match for manual test
@@ -68,21 +63,24 @@ public class Main {
 			
 		} else if (args[0].equals("end")) {
 			// Create a new game state for testing purpose
-			GameState state = new GameState(new ArrayList<>(testPlayerList1));
+			int numPlayers = 3;
+			GameState state = new GameState(numPlayers, 0, null);
 			state.initializePlayerStack();
 			
 			// pick a random player
-			double randomPlayerDouble = Math.random() * testPlayerList1.size();
+			double randomPlayerDouble = Math.random() * numPlayers;
 			int randomPlayer = (int) randomPlayerDouble;
 			Player player = state.getAllPlayers().get(randomPlayer);
-			System.out.println("winner is " + testPlayerList1.get(randomPlayer));
+			System.out.println("winner is " + Player.NAME_PREFIX + randomPlayer);
 			
 			// empty player' stack
 			player.setStack(new ArrayList<Card>());
 			
 			// display winner, should be the player we picked earlier
-			new EndView(testPlayerList1.get(state.checkWinner()));
+			new EndView(Player.NAME_PREFIX + state.checkWinner());
 		}
+		*/
+		new StartControl();
 		
 	}
 }

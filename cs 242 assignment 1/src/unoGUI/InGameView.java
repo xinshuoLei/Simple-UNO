@@ -14,7 +14,7 @@ import unoGameLogic.Player;
 /**
  * class for in game GUI
  */
-public class InGame extends GUI {
+public class InGameView extends GUI {
 	
 	/**
 	 * constant for font size
@@ -30,11 +30,6 @@ public class InGame extends GUI {
 	 * constant for window height
 	 */
 	private final int WINDOW_HEIGHT = 800;
-	
-	/**
-	 * corresponing GameState instance
-	 */
-	private GameState state = null;
 	
 	/**
 	 * constant for button width
@@ -81,11 +76,16 @@ public class InGame extends GUI {
 	 */
 	private final String WILD_URL = "wildchange";
 	
+	/**
+	 * corresponing GameState instance
+	 */
+	private GameState state = null;
+	
 	 /**
 	 * Constructor of the StartView class
 	 * @param setState the game state for the current GUI
 	 */
-	public InGame(GameState setState) {
+	public InGameView(GameState setState) {
 		
 		state = setState;
 		

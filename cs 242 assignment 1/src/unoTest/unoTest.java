@@ -83,7 +83,7 @@ class unoTest {
 	@Test
 	@DisplayName("Check initial draw pile")
 	void testInitialPile() {
-		GameState state = new GameState(null);
+		GameState state = new GameState(0, 0, null);
 		assertEquals(108, state.getDrawPile().size(), 
 				"The size of the initial draw pile should be 108");
 	}
@@ -92,7 +92,7 @@ class unoTest {
 	@DisplayName("First card of draw pile should be random")
 	void testShuffleCard() {
 		System.out.println("output of testShuffleCard(): ");
-		GameState state = new GameState(null);
+		GameState state = new GameState(0, 0, null);
 		Card firstCard = state.getDrawPile().get(0);
 		System.out.print("The first card is: ");
 		firstCard.printCard();
@@ -102,8 +102,7 @@ class unoTest {
 	@Test
 	@DisplayName("Check a player's initial stack of cards")
 	void testPlayerInitialStack() {
-		List<String> playerNames = new ArrayList<>(testPlayerList1);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(3, 0, null);
 		state.initializePlayerStack();
 		for (Player onePlayer : state.getAllPlayers()) {
 			assertEquals(7, onePlayer.getStack().size(), 
@@ -213,7 +212,7 @@ class unoTest {
 	@Test
 	@DisplayName("Check discard pile is reused correctly when draw pile is empty")
 	void testReuseDiscardPile1() {
-		GameState state = new GameState(null);
+		GameState state = new GameState(0, 0, null);
 		// set discard pile and empty draw pile
 		state.setDiscardPile(new ArrayList<>(testPile1));
 		state.setDrawPile(new ArrayList<Card>());
@@ -242,7 +241,7 @@ class unoTest {
 	@Test
 	@DisplayName("Discard pile should not be reused if draw pile is not empty")
 	void testReuseDiscardPile2() {
-		GameState state = new GameState(null);
+		GameState state = new GameState(0, 0, null);
 		// set discard pile and draw pile
 		state.setDrawPile(new ArrayList<>(testPile1));
 		state.setDiscardPile(new ArrayList<>(testPile2));
@@ -261,8 +260,7 @@ class unoTest {
 	@Test
 	@DisplayName("Check shouldEnd return true when the game should end")
 	void testShouldEndTrue() {
-		List<String> playerNames = new ArrayList<>(testPlayerList1);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(3, 0, null);
 		state.initializePlayerStack();
 		
 		// empty a player's stack
@@ -276,8 +274,7 @@ class unoTest {
 	@Test
 	@DisplayName("Check shouldEnd return false when the game is not over")
 	void testShouldEndFalse() {
-		List<String> playerNames = new ArrayList<>(testPlayerList1);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(3, 0, null);
 		state.initializePlayerStack();
 		
 		// modify a player's stack
@@ -291,8 +288,7 @@ class unoTest {
 	@Test
 	@DisplayName("Check disacrd pile and player stack is updated correctly - valid card")
 	void testUpdatePileTrue() {
-		List<String> playerNames = new ArrayList<>(testPlayerList2);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(2, 0, null);
 		state.initializePlayerStack();
 		
 		// give a custom discard pile to make sure the card played 
@@ -330,8 +326,7 @@ class unoTest {
 	@DisplayName("Check disacrd pile and player stack is not updated - invalid card")
 	void testUpdatePileFalse() {
 		System.out.println("output of testUpdatePileFalse(): ");
-		List<String> playerNames = new ArrayList<>(testPlayerList1);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(3, 0, null);
 		state.initializePlayerStack();
 		
 		// give a custom discard pile to make sure it stays the same
@@ -364,8 +359,7 @@ class unoTest {
 	@Test
 	@DisplayName("Check effect of a valid reverse card")
 	void testValidReverse() {
-		List<String> playerNames = new ArrayList<>(testPlayerList3);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(4, 0, null);
 		
 		// save initial allPlayers
 		List<Player> initialAllPlayers = new ArrayList<>(state.getAllPlayers());
@@ -392,8 +386,7 @@ class unoTest {
 	@Test
 	@DisplayName("Check effect of a wild card")
 	void testValidSkip() {
-		List<String> playerNames = new ArrayList<>(testPlayerList1);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(3, 0, null);
 		
 		// set current player to the third player
 		state.setCurrentPlayer(2);
@@ -409,8 +402,7 @@ class unoTest {
 	@DisplayName("Check effect of a wild card")
 	void testValidWild() {
 		System.out.println("output of testValidWild(): ");
-		List<String> playerNames = new ArrayList<>(testPlayerList2);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(2, 0, null);
 		
 		// set cardToMatch so we can know if it is updated
 		state.setCardToMatch(new NumberCard("3", Card.BLUE));
@@ -428,9 +420,7 @@ class unoTest {
 	 * included custom rule split draw
 	 */
 	void testValidNormalNumberCard() {
-		List<String> playerNames = new ArrayList<>(testPlayerList2);
-		GameState state = new GameState(playerNames);
-		
+		GameState state = new GameState(2, 0, null);
 		// set cardToMatch so we can know if it is updated
 		state.setCardToMatch(new NumberCard("3", Card.BLUE));
 		// process a wild card
@@ -447,8 +437,7 @@ class unoTest {
 	 * included custom rule split draw
 	 */
 	void testValidDrawTwoCardNoStack() {
-		List<String> playerNames = new ArrayList<>(testPlayerList3);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(4, 0, null);
 		state.initializePlayerStack();
 		
 		state.setCardToMatch(new NumberCard("5", Card.BLUE));
@@ -476,8 +465,7 @@ class unoTest {
 	@Test
 	@DisplayName("Check effect of a vaid draw two card - with stacking")
 	void testValidDrawTwoCardStack() {
-		List<String> playerNames = new ArrayList<>(testPlayerList3);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(4, 0, null);
 		state.initializePlayerStack();
 		
 		state.setCardToMatch(new NumberCard("7", Card.YELLOW));
@@ -507,8 +495,7 @@ class unoTest {
 	@DisplayName("Check effect of a valid wild draw four card - no stacking")
 	void testValidWildDrawFour() {
 		System.out.println("output of testValidWildDrawFour(): ");
-		List<String> playerNames = new ArrayList<>(testPlayerList3);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(4, 0, null);
 		state.initializePlayerStack();
 	
 		// set current player to 1
@@ -539,8 +526,7 @@ class unoTest {
 	@Test
 	@DisplayName("player draw a card and is able to play it")
 	void testDrawAndPlay() {
-		List<String> playerNames = new ArrayList<>(testPlayerList1);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(3, 0, null);
 		state.initializePlayerStack();
 		
 		state.setCardToMatch(new NumberCard("5", Card.GREEN));
@@ -559,8 +545,7 @@ class unoTest {
 	@Test
 	@DisplayName("Check special rule: cardBefore Special") 
 	void testCardBeforeSpecial() {
-		List<String> playerNames = new ArrayList<>(testPlayerList3);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(4, 0, null);
 		
 		// set cardToMatch so preceding card can be processed
 		state.setCardToMatch(new NumberCard("1", Card.BLUE));

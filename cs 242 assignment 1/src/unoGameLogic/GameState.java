@@ -73,21 +73,34 @@ public class GameState {
 	
 	/**
 	 * Constructor of the GameState class
-	 * @param playerNames List of player names
+	 * @param numHumanPlayers number of AI players
+	 * @param numAI number of human players
+	 * @param aiType type of AI
 	 */
-	public GameState(List<String> playerNames) {
+	public GameState(int numHumanPlayers, int numAI, String aiType) {
 		
 		initializeDrawPile();
 		
 		Collections.shuffle(drawPile);
 		
 		// initialize the list allPlayers and drawPenalty
-		if (playerNames != null) {
-			for (int z = 0; z < playerNames.size(); z++) {
-				allPlayers.add(new Player(playerNames. get(z)));	
+		for (int i = 0; i < numHumanPlayers; i++) {
+			allPlayers.add(new HumanPlayer(i));	
+			drawPenalty.add(0);
+		}
+		if (aiType != null) {
+			for (int j = 0; j < numAI; j++) {
+				if (aiType.equals(Player.BASELINE_AI)) {
+					allPlayers.add(new BaselineAIPlayer(j));	
+				} else if (aiType.equals(Player.STRATEGIC_AI)) {
+					allPlayers.add(new StrategicAIPlayer(j));	
+				}
 				drawPenalty.add(0);
 			}
 		}
+		
+		
+		
 	}
 
 	/**
