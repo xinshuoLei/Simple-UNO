@@ -143,6 +143,11 @@ public class InGameView extends GUI {
 	 */
 	private List<JLabel> stackJLabels = new ArrayList<>();
 	
+	/**
+	 * JLabel for stackHiddenPrompt
+	 */
+	private JLabel stackHiddenLabel;
+	
 	 /**
 	  * Constructor of the InGameView class
 	  * @param cardToMatch card to match
@@ -168,10 +173,12 @@ public class InGameView extends GUI {
 		displayCardToMatch(cardToMatch);
 		displayCardBeforeSpecial(cardBeforeSpecial);
 		displayStateInfo(currentPlayer, drawPenalty, playerAI);
+		displayStaticPrompt();
 		
 		displayStack(stack);
 		addCardSelection(stack);
 		addColorSelection();
+		displayStackHiddenPrompt();
 
 		initializeGameArea();
 		
@@ -211,6 +218,25 @@ public class InGameView extends GUI {
 		int promptX = 125;
 		int promptY = 270;
 		displayText(inGamePanel, drawPilePrompt, FONT_SIZE, promptX, promptY);
+	}
+	
+	/**
+	 * Display prompts that are static, such as instructions
+	 */
+	private void displayStaticPrompt() {
+		// display a prompt indicating card to match
+		String cardToMatch = "top card in discard pile";
+		int cardToMatchX = 330;
+		int cardToMatchY = 250;
+		displayText(inGamePanel, cardToMatch, FONT_SIZE, cardToMatchX, cardToMatchY);
+		
+		// display a prompt
+		String cardBeforeSpecial = "card before special: ";
+		displayText(inGamePanel, cardBeforeSpecial, FONT_SIZE, 650, 200);
+		
+		// display instruction
+		String cardSelectInstruction = "select card to play:";
+		displayText(inGamePanel, cardSelectInstruction, FONT_SIZE, BUTTON_X, 500);
 	}
 	
 	/**
@@ -297,11 +323,6 @@ public class InGameView extends GUI {
 				cardToMatchX, cardToMatchY, cardUrl);
 		updatedJLabel.add(cardToMatchLabel);
 		
-		// display a prompt indicating it is the card to match
-		String prompt = "top card in discard pile";
-		int promptX = 330;
-		int promptY = 250;
-		displayText(inGamePanel, prompt, FONT_SIZE, promptX, promptY);
 		
 		// display color to match for the case where cardToMatch is wild card
 		// check against null to prevent first card to match is wild
@@ -391,10 +412,6 @@ public class InGameView extends GUI {
 	 * @param cardBeforeSpecial card before special
 	 */
 	public void displayCardBeforeSpecial(Card cardBeforeSpecial) {
-		// display a prompt
-		String prompt = "card before special: ";
-		displayText(inGamePanel, prompt, FONT_SIZE, 650, 200);
-		// display card before special
 		// display a message null if cardBeforeSpecial is null
 		if (cardBeforeSpecial == null) {
 			String none = "None";
@@ -413,15 +430,12 @@ public class InGameView extends GUI {
 	 * @param stack stack of the current player
 	 */
 	public void addCardSelection(List<Card> stack) {
-		// display instruction
-		String prompt = "select card to play:";
-		displayText(inGamePanel, prompt, FONT_SIZE, BUTTON_X, 500);
 		String[] cardInfos = new String[stack.size() + 1];
 		// default option is empty, forcing user to select
 		String emptyStr = "";
 		cardInfos[0] = emptyStr;
-		for (int i = 1; i < stack.size(); i++) {
-			cardInfos[i] = stack.get(i).getCardInfo();
+		for (int i = 1; i < stack.size() + 1; i++) {
+			cardInfos[i] = stack.get(i - 1).getCardInfo();
 		}
 		cardSelection = addDropDown(inGamePanel, cardInfos, BUTTON_WIDTH, 
 				BUTTON_HEIGHT, BUTTON_X, 530);
@@ -439,6 +453,16 @@ public class InGameView extends GUI {
 		colorSelection = addDropDown(inGamePanel, colors, BUTTON_WIDTH, BUTTON_HEIGHT, 
 				BUTTON_X, 450);
 	}
+	
+	/**
+	 * Display a prompt for hidden stack
+	 * used for AI players
+	 */
+	public void displayStackHiddenPrompt() {
+		String prompt = "stack is hidden for AI players";
+		stackHiddenLabel = displayText(inGamePanel, prompt, FONT_SIZE, 200, 500);
+	}
+	
 	
 	/**
 	 * Add a actionListener for the skip button
@@ -509,5 +533,10 @@ public class InGameView extends GUI {
 
 	public JFrame getFrame() {
 		return frame;
+	}
+
+
+	public JLabel getStackHiddenLabel() {
+		return stackHiddenLabel;
 	}
 }

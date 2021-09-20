@@ -89,7 +89,7 @@ public class GameState {
 			drawPenalty.add(0);
 		}
 		if (aiType != null) {
-			for (int j = 0; j < numAI; j++) {
+			for (int j = numHumanPlayers; j < numAI + numHumanPlayers; j++) {
 				if (aiType.equals(Player.BASELINE_AI)) {
 					allPlayers.add(new BaselineAIPlayer(j));	
 				} else if (aiType.equals(Player.STRATEGIC_AI)) {
@@ -188,7 +188,7 @@ public class GameState {
 			}
 			drawPenalty.set(currentPlayer, 0);
 			incrementCurrentPlayer();
-				return false;
+			return false;
 		}
 		
 		// player has no card that matches cardToMatch, 
@@ -392,6 +392,9 @@ public class GameState {
 	 */
 	public static boolean checkCardValidity(Card cardToMatch, Card cardBeforeSpcial,
 			Card cardPlayed) {
+		if (cardPlayed == null) {
+			return false;
+		}
 		// wild cards are always valid
 		if (cardPlayed.isWild()) {
 			return true;

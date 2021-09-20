@@ -93,7 +93,27 @@ public class InGameModel {
 		}
 		return allPlayers.get(winnerIndex).getName();
 	}
-
+	
+	/**
+	 * Deal with AI player
+	 * Let AI select a card and color
+	 * @return the card AI played
+	 */
+	public String aiPlayerTurn() {
+		int currentPlayer = state.getCurrentPlayer();
+		Player player = state.getAllPlayers().get(currentPlayer);
+		player.updateValidCard(getCardToMatch(), getCardBeforeSpecial());
+		player.pickCard();
+		player.pickColorForWild();
+		cardSelected = player.attemptPlayCard();
+		state.processCardPlayed(cardSelected);
+		if (cardSelected != null) {
+			return cardSelected.getCardInfo();
+		}
+		return null;
+	}
+	
+	
 	public GameState getState() {
 		return state;
 	}

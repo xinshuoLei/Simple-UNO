@@ -19,6 +19,7 @@ import com.sun.net.httpserver.Authenticator.Success;
 import java.util.List;
 
 import unoGameLogic.GameState;
+import unoGameLogic.Player;
 
 public class InGameControl {
 	
@@ -55,6 +56,8 @@ public class InGameControl {
 		view = new InGameView(cardToMatch, cardBeforeSpecial, stack, currentPlayer,
 				drawPenalty, playerNum, playerAI);
 		
+		view.getStackHiddenLabel().setVisible(false);
+		
 		// set up listeners
 		setupHideRevealListener();
 		setupSkipListener();
@@ -86,6 +89,8 @@ public class InGameControl {
 	private void setupSkipListener() {
 		ActionListener skipListener = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// hide stack so that next player cannot see
+				hideStack();
 				// show a confirming dialog
 				JOptionPane optionPane = new JOptionPane();
 				int result = JOptionPane.showConfirmDialog(optionPane,
@@ -94,6 +99,7 @@ public class InGameControl {
 				if (result == confirm) {
 					model.nextPlayer();
 					updatePanel();
+					checkAIPlayer();
 				}
 			}
 		};
@@ -109,8 +115,8 @@ public class InGameControl {
 			public void actionPerformed(ActionEvent e) {
 				JComboBox<String> dropdown = (JComboBox<String>) e.getSource();
 				int selection = (int) dropdown.getSelectedIndex();
-				System.out.println(selection);
-				model.setCardSelection(selection);
+				// -1 because first selection is blank
+				model.setCardSelection(selection - 1);
 			}
 		};
 		view.addCardSelectionListener(listener);
@@ -142,28 +148,7 @@ public class InGameControl {
 				playStatus status = model.playCardHuman();
 				switch(status) {
 					case SUCCESS: 
-						// show a confirming dialog for switching player
-						JOptionPane optionPaneSuccess = new JOptionPane();
-						int result = JOptionPane.showConfirmDialog(optionPaneSuccess,
-								"Successully played " + 
-								model.getCardSelected().getCardInfo() + 
-								"\nClick yes to confirm switching to next player");
-						int confirm = 0;
-						if (result == confirm) {
-							model.nextPlayer();
-							updatePanel();
-							// check gameEnding condition
-							String winner = model.checkWinner();
-							// if there is a winner, create end view
-							// and close the current window
-							if (winner != null) {
-								JFrame inGameFrame = view.getFrame();
-								// close startFrame
-								inGameFrame.setVisible(false);
-								inGameFrame.dispose();
-								new EndView(winner);
-							}
-						}
+						successfulPlayCard();
 						break;
 						
 					case FAIL:
@@ -190,6 +175,75 @@ public class InGameControl {
 		view.addplayButtonListener(listener);
 	}
 	
+	/**
+	 * Function that deal with the situation that a card is 
+	 * successfully played
+	 */
+	private void successfulPlayCard() {
+		// hide stack so that next player cannot see
+		hideStack();
+		// show a confirming dialog for switching player
+		JOptionPane optionPaneSuccess = new JOptionPane();
+		int result = JOptionPane.showConfirmDialog(optionPaneSuccess,
+				"Successully played " + 
+				model.getCardSelected().getCardInfo() + 
+				"\nClick yes to confirm switching to next player");
+		int confirm = 0;
+		if (result == confirm) {
+			model.nextPlayer();
+			updatePanel();
+			checkAIPlayer();
+			// check gameEnding condition
+			String winner = model.checkWinner();
+			// if there is a winner, create end view
+			// and close the current window
+			if (winner != null) {
+				JFrame inGameFrame = view.getFrame();
+				// close startFrame
+				inGameFrame.setVisible(false);
+				inGameFrame.dispose();
+				new EndView(winner);
+			}
+		}
+	}
+	
+	/**
+	 * Check if current player is AI. If current player is AI, 
+	 * call aiPlayerTurn() in model
+	 */
+	private void checkAIPlayer() {
+		if (!model.getAIType().equals(Player.NOT_AI)) {
+			// hide AI stack
+			hideStack();
+			view.getStackHiddenLabel().setVisible(true);
+			String cardPlayed = model.aiPlayerTurn();
+			JOptionPane optionPane = new JOptionPane();
+			String message = "AI finished turn. click yes to switch to next player";
+			if (cardPlayed != null) {
+				message = "AI finished turn." +
+						"\nAI played " + cardPlayed +
+						"\nclick yes to switch to next player";
+			}
+			// pop up window showing AI finished turn
+			int result = JOptionPane.showConfirmDialog(optionPane,message);
+			int confirm = 0;
+			if (result == confirm) {
+				model.nextPlayer();
+				updatePanel();
+				// check if next player is still AI
+				checkAIPlayer();
+			}
+		}
+		view.getStackHiddenLabel().setVisible(false);
+	}
+
+	private void hideStack() {
+		List<JLabel> stackJLabels = view.getStackJLabels();
+		for (JLabel oneLabel : stackJLabels) {
+			// set visibility to the opposite of current visibility
+			oneLabel.setVisible(false);
+		}
+	}
 	
 	/**
 	 * Update panel in InGameView to display info related to next player
@@ -225,17 +279,14 @@ public class InGameControl {
 	 */
 	private void removeCurrentComponent() {
 		List<JLabel> stackJLabels = view.getStackJLabels();
-		boolean visibility = stackJLabels.get(0).isVisible();
 		JPanel panel = view.getInGamePanel();
 		for (JLabel oneLabel : stackJLabels) {
-			// set visibility to the opposite of current visibility
-			oneLabel.setVisible(!visibility);
 			panel.remove(oneLabel);
 			panel.validate();
 		}
 		for (JLabel oneLabel : view.getUpdatedJLabel()) {
-			// set visibility to the opposite of current visibility
-			oneLabel.setVisible(!visibility);
+			// set visibility to false
+			oneLabel.setVisible(false);
 			panel.remove(oneLabel);
 			panel.validate();
 		}
