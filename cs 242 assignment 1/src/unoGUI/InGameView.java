@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeListener;
 
 import unoCard.Card;
 import unoGameLogic.GameState;
@@ -120,6 +121,11 @@ public class InGameView extends GUI {
 	 * JComboBox for card selection
 	 */
 	private JComboBox cardSelection;
+	
+	/**
+	 * JComboBox for color selection
+	 */
+	private JComboBox colorSelection;
 	
 	
 	/**
@@ -410,8 +416,11 @@ public class InGameView extends GUI {
 		// display instruction
 		String prompt = "select card to play:";
 		displayText(inGamePanel, prompt, FONT_SIZE, BUTTON_X, 500);
-		String[] cardInfos = new String[stack.size()];
-		for (int i = 0; i < stack.size(); i++) {
+		String[] cardInfos = new String[stack.size() + 1];
+		// default option is empty, forcing user to select
+		String emptyStr = "";
+		cardInfos[0] = emptyStr;
+		for (int i = 1; i < stack.size(); i++) {
 			cardInfos[i] = stack.get(i).getCardInfo();
 		}
 		cardSelection = addDropDown(inGamePanel, cardInfos, BUTTON_WIDTH, 
@@ -427,7 +436,7 @@ public class InGameView extends GUI {
 		displayText(inGamePanel, prompt, FONT_SIZE, BUTTON_X, 420);
 		String na = "N/A";
 		String[] colors = {na, Card.YELLOW, Card.GREEN, Card.RED, Card.BLUE};
-		addDropDown(inGamePanel, colors, BUTTON_WIDTH, BUTTON_HEIGHT, 
+		colorSelection = addDropDown(inGamePanel, colors, BUTTON_WIDTH, BUTTON_HEIGHT, 
 				BUTTON_X, 450);
 	}
 	
@@ -447,6 +456,30 @@ public class InGameView extends GUI {
 		hideRevealButton.addActionListener(listener);
 	}
 
+	
+	/**
+	 * Add a listener for card selection
+	 * @param listener
+	 */
+	public void addCardSelectionListener(ActionListener listener) {
+		cardSelection.addActionListener(listener);
+	}
+	
+	/**
+	 * Add a listener for color selection
+	 * @param listener
+	 */
+	public void addColorSelectionListener(ActionListener listener) {
+		colorSelection.addActionListener(listener);
+	}
+	
+	/**
+	 * Add a listener for the play button
+	 * @param listener
+	 */
+	public void addplayButtonListener(ActionListener listener) {
+		playButton.addActionListener(listener);
+	}
 
 
 	public List<JLabel> getStackJLabels() {
@@ -471,5 +504,10 @@ public class InGameView extends GUI {
 
 	public JComboBox getCardSelection() {
 		return cardSelection;
+	}
+
+
+	public JFrame getFrame() {
+		return frame;
 	}
 }
