@@ -1,20 +1,18 @@
-package unoGUI;
+package unoGUIView;
 
-import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle.Control;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.event.ChangeListener;
 
 import unoCard.Card;
-import unoGameLogic.GameState;
 import unoGameLogic.Player;
 
 /**
@@ -148,6 +146,35 @@ public class InGameView extends GUI {
 	 */
 	private JLabel stackHiddenLabel;
 	
+	/**
+	 * x corrdinate for the card added
+	 */
+	private int addCardX = 100;
+	/**
+	 * y corrdinate for the card added
+	 */
+	private int addCardY = 330;
+	
+	/**
+	 * max card in a row when displaying stack
+	 */
+	int maxCardInRow = 7;
+	
+	/**
+	 * the x-coordinate of the first card in stack
+	 */
+	int firstCardX = 100;
+	
+	/**
+	 * margin in x-coordinate for stack
+	 */
+	int xMargin = 80;
+	
+	/**
+	 * margin in y-coordinate for stack
+	 */
+	int yMargin = 100;
+	
 	 /**
 	  * Constructor of the InGameView class
 	  * @param cardToMatch card to match
@@ -216,8 +243,12 @@ public class InGameView extends GUI {
 		// display text indicating it's draw pile
 		String drawPilePrompt = "draw pile";
 		int promptX = 125;
-		int promptY = 270;
+		int promptY = 250;
 		displayText(inGamePanel, drawPilePrompt, FONT_SIZE, promptX, promptY);
+		
+		// add an instruction for drawing cards
+		String drawInstruction = "click to draw card";
+		displayText(inGamePanel, drawInstruction, FONT_SIZE, 95, promptY + 40);
 	}
 	
 	/**
@@ -384,29 +415,29 @@ public class InGameView extends GUI {
 	 * @param stack stack of current player
 	 */
 	public void displayStack(List<Card> stack) {
-		int maxCardInRow = 7;
-		int firstCardX = 100;
-		int xMargin = 80;
-		int yMargin = 100;
-		int cardY = 330;
-		int cardX = 100;
-		
-		for (int i = 0; i < stack.size(); i++) {
+		addCardX = 100;
+		addCardY = 330;
+		int stackSize = stack.size();
+		for (int i = 0; i < stackSize; i++) {
 			if (i % maxCardInRow == 0) {
 				// reach maximum number of cards in a row
 				// should create a new row
-				cardY += yMargin;
-				cardX = firstCardX;
+				addCardY += yMargin;
+				addCardX = firstCardX;
 			}
 			String url = constructCardUrl(stack.get(i));
 			JLabel card = displayImageFromUrl(inGamePanel, CARD_WIDTH, CARD_HEIGHT, 
-					cardX, cardY, url);
+					addCardX, addCardY, url);
 			stackJLabels.add(card);
 			// add margin to x so next card can be placed in right position
-			cardX += xMargin;
+			addCardX += xMargin;
 		}
-		
+		if (stackSize % maxCardInRow == 0) {
+			addCardX = firstCardX;
+			addCardY += yMargin;
+		} 
 	}
+	
 	/**
 	 * Display cardBeforeSpecial
 	 * @param cardBeforeSpecial card before special
@@ -452,6 +483,18 @@ public class InGameView extends GUI {
 		String[] colors = {na, Card.YELLOW, Card.GREEN, Card.RED, Card.BLUE};
 		colorSelection = addDropDown(inGamePanel, colors, BUTTON_WIDTH, BUTTON_HEIGHT, 
 				BUTTON_X, 450);
+	}
+	
+	/**
+	 * Display card drawn
+	 * @param cardDrawn the card drawn
+	 * @param stackSize size of stack
+	 */
+	public void displayCardDrawn(Card cardDrawn) {
+		String url = constructCardUrl(cardDrawn);
+		JLabel label = displayImageFromUrl(inGamePanel, CARD_WIDTH, CARD_HEIGHT, addCardX, 
+				addCardY, url);
+		stackJLabels.add(label);
 	}
 	
 	/**
@@ -503,6 +546,14 @@ public class InGameView extends GUI {
 	 */
 	public void addplayButtonListener(ActionListener listener) {
 		playButton.addActionListener(listener);
+	}
+	
+	/**
+	 * Add a listener for the draw pile
+	 * @param listener
+	 */
+	public void addDrawPileListeneer(MouseListener listener) {
+		drawPile.addMouseListener(listener);
 	}
 
 

@@ -1,4 +1,4 @@
-package unoGUI;
+package unoGUIControl;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,6 +8,9 @@ import javax.swing.JFrame;
 import javax.swing.JSpinner;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import unoGUIModel.StartModel;
+import unoGUIView.StartView;
 
 public class StartControl {
 	
@@ -95,7 +98,7 @@ public class StartControl {
 			public void actionPerformed(ActionEvent e) {
 				JComboBox<String> dropdown = (JComboBox<String>) e.getSource();
 				String selection = (String) dropdown.getSelectedItem();
-				System.out.println(selection);
+				// update aiType in model
 				model.setAiType(selection);
 			}
 		};

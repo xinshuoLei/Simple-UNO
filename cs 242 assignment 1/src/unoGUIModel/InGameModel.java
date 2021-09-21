@@ -1,4 +1,4 @@
-package unoGUI;
+package unoGUIModel;
 
 import java.util.List;
 
@@ -42,6 +42,12 @@ public class InGameModel {
 	 * used for human player
 	 */
 	private String colorSelection;
+	
+	/**
+	 * If the current player can draw card
+	 * A player can only draw one card in a turn
+	 */
+	private boolean canDrawCard = true;
 
 	
 	/**
@@ -59,6 +65,7 @@ public class InGameModel {
 	 * change current player to next player
 	 */
 	public void nextPlayer() {
+		canDrawCard = true;
 		state.incrementCurrentPlayer();
 	}
 	
@@ -113,24 +120,64 @@ public class InGameModel {
 		return null;
 	}
 	
+	/**
+	 * Draw a card from draw pile
+	 * @return card drawn
+	 */
+	public Card drawCard() {
+		int currentPlayer = state.getCurrentPlayer();
+		Player player = state.getAllPlayers().get(currentPlayer);
+		player.drawCard(state.getDrawPile(), 1, false,
+				getCardToMatch(), getCardSelected());
+		Card cardDrawn = state.getDrawPile().get(0);
+		// remove card drawn from draw pile
+		state.getDrawPile().remove(0);
+		canDrawCard = false;
+		return cardDrawn;
+	}
 	
+	/**
+	 * Update cardSelection index and cardSelected
+	 * @param cardSelection index of card selected
+	 */
+	public void setCardSelection(int cardSelection) {
+		this.cardSelectionIndex = cardSelection;
+		cardSelected = getStack().get(cardSelectionIndex);
+	}
+	
+	/**
+	 * Update colorSelection and the colorToUse variable for 
+	 * current player
+	 * @param colorSelection
+	 */
+	public void setColorSelection(String colorSelection) {
+		this.colorSelection = colorSelection;
+		int currentPlayer = state.getCurrentPlayer();
+		Player player = state.getAllPlayers().get(currentPlayer);
+		player.setColorToUse(colorSelection);
+	}
+
 	public GameState getState() {
 		return state;
 	}
 	
+
 	public Card getCardToMatch() {
 		return state.getCardToMatch();
 	}
 	
+
 	public Card getCardBeforeSpecial() {
 		return state.getCardBeforeSpecial();
 	}
 	
+
 	public String getCurrentPlayer() {
 		int currentPlayer = state.getCurrentPlayer();
 		Player player = state.getAllPlayers().get(currentPlayer);
 		return player.getName();
 	}
+
 	
 	public int getPenalty() {
 		int currentPlayer = state.getCurrentPlayer();
@@ -142,7 +189,7 @@ public class InGameModel {
 		Player player = state.getAllPlayers().get(currentPlayer);
 		return player.getAiType();
 	}
-	
+	 
 	public List<Card> getStack() {
 		int currentPlayer = state.getCurrentPlayer();
 		Player player = state.getAllPlayers().get(currentPlayer);
@@ -160,22 +207,18 @@ public class InGameModel {
 	public String getColorSelection() {
 		return colorSelection;
 	}
-
-	public void setCardSelection(int cardSelection) {
-		this.cardSelectionIndex = cardSelection;
-		cardSelected = getStack().get(cardSelectionIndex);
-	}
-
-	public void setColorSelection(String colorSelection) {
-		this.colorSelection = colorSelection;
-		int currentPlayer = state.getCurrentPlayer();
-		Player player = state.getAllPlayers().get(currentPlayer);
-		player.setColorToUse(colorSelection);
-	}
-
+	
 	public Card getCardSelected() {
 		return cardSelected;
 	}
+
+	public boolean getCanDrawCard() {
+		return canDrawCard;
+	}
+	
+
+
+	
 	
 	
 }

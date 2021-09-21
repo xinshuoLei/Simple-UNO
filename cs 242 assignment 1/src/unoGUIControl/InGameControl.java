@@ -1,20 +1,23 @@
-package unoGUI;
+package unoGUIControl;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.security.InvalidAlgorithmParameterException;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import unoCard.Card;
-import unoGUI.InGameModel.playStatus;
+import unoGUIModel.InGameModel;
+import unoGUIModel.InGameModel.playStatus;
+import unoGUIView.EndView;
+import unoGUIView.InGameView;
 
-import javax.naming.InsufficientResourcesException;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import com.sun.net.httpserver.Authenticator.Success;
 
 import java.util.List;
 
@@ -64,6 +67,7 @@ public class InGameControl {
 		setupCardSelectionListener();
 		setupColorSelectionListener();
 		setupPlayButtonListener();
+		setupDrawPileListenter();
 	}
 	
 	/**
@@ -131,11 +135,35 @@ public class InGameControl {
 			public void actionPerformed(ActionEvent e) {
 				JComboBox<String> dropdown = (JComboBox<String>) e.getSource();
 				String selection = (String) dropdown.getSelectedItem();
-				System.out.println(selection);
+				// update colorSelection in model
 				model.setColorSelection(selection);
 			}
 		};
 		view.addColorSelectionListener(listener);
+	}
+	
+	/**
+	 * Set up a listener for draw pile
+	 * When draw pile is clicked, current player draw a card
+	 */
+	private void setupDrawPileListenter() {
+		MouseListener listener = new MouseAdapter() {
+			 @Override
+             public void mouseClicked(MouseEvent e) {
+				 if (model.getCanDrawCard()) {
+					 // if the player is still allowed to draw a card
+					 // draw a card
+					 Card cardDrawn = model.drawCard();
+	                 view.displayCardDrawn(cardDrawn);
+				 } else {
+					 // display a message showing the player can't draw
+					 JOptionPane optionPaneFail = new JOptionPane();
+						JOptionPane.showMessageDialog(optionPaneFail, "You "
+								+ "can only draw one card in each round");
+				 }
+             }
+		};
+		view.addDrawPileListeneer(listener);
 	}
 	
 	/**
@@ -152,12 +180,14 @@ public class InGameControl {
 						break;
 						
 					case FAIL:
+						// display a dialog indicating card selected is invalid
 						JOptionPane optionPaneFail = new JOptionPane();
 						JOptionPane.showMessageDialog(optionPaneFail, "The card selected is "
 								+ "invalid. Please pick another one");
 						break;
 						
 					case SKIP:
+						// display a dialog confirming switching to next playre
 						JOptionPane optionPaneSkip = new JOptionPane();
 						int resultSkip = JOptionPane.showConfirmDialog(optionPaneSkip,
 								"You have a draw penalty." + 
@@ -166,7 +196,9 @@ public class InGameControl {
 						int confirmSkip = 0;
 						if (resultSkip == confirmSkip) {
 							updatePanel();
+							checkAIPlayer();
 						}
+						break;
 						
 					default:
 				}
@@ -280,10 +312,12 @@ public class InGameControl {
 	private void removeCurrentComponent() {
 		List<JLabel> stackJLabels = view.getStackJLabels();
 		JPanel panel = view.getInGamePanel();
+		// remove all stack card images
 		for (JLabel oneLabel : stackJLabels) {
 			panel.remove(oneLabel);
 			panel.validate();
 		}
+		// remove all components that need to be updated
 		for (JLabel oneLabel : view.getUpdatedJLabel()) {
 			// set visibility to false
 			oneLabel.setVisible(false);

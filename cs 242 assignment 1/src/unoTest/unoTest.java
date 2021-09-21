@@ -11,18 +11,15 @@ import unoCard.NumberCard;
 import unoCard.ReverseCard;
 import unoCard.SkipCard;
 import unoCard.WildCard;
+import unoGameLogic.BaselineAIPlayer;
 import unoGameLogic.GameState;
 import unoGameLogic.Player;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import unoGameLogic.StrategicAIPlayer;
 import java.util.*;
 
 
 /**
  * Unit tests for uno game logic 
- * set user input reference:
- * https://stackoverflow.com/questions/6415728/junit-testing-with-simulated-user-input 
  */
 class unoTest {
 	
@@ -47,6 +44,7 @@ class unoTest {
 		testPile.add(new SkipCard(Card.SKIP, Card.RED));
 		testPile.add(new WildCard(Card.WILD, null));
 		testPile.add(new NumberCard("0", Card.GREEN));
+		testPile.add(new NumberCard("3", Card.YELLOW));
 		return testPile;
 	}
 	
@@ -58,7 +56,6 @@ class unoTest {
 		testPile.add(new SkipCard(Card.SKIP, Card.RED));
 		testPile.add(new WildCard(Card.WILD, null));
 		testPile.add(new NumberCard("2", Card.RED));
-		testPile.add(new WildCard(Card.WILD_DRAW4, null));
 		testPile.add(new WildCard(Card.WILD_DRAW4, null));
 		return testPile;
 	}
@@ -456,13 +453,12 @@ class unoTest {
 		
 		// process a draw two card
 		Card played = new DrawTwoCard(Card.DRAW2, Card.BLUE);
-		state.incrementCurrentPlayer();
 		state.processCardPlayed(played);
 		
 		// the next player plays a card that is not draw two
 		// so this player need to draw two card and skip this turn
-		state.processCardPlayed(new NumberCard("4", Card.BLUE));
 		state.incrementCurrentPlayer();
+		state.processCardPlayed(new NumberCard("4", Card.BLUE));
 		assertEquals(player1InitialStack.size() + 1, player1InitialStack.size() + 1,  
 				"next player should draw one cards because of draw split");
 		assertEquals(1, state.getCurrentPlayer(), 
@@ -576,5 +572,56 @@ class unoTest {
 		assertEquals(true, cardIsEqual(thirdCard, state.getCardToMatch()),
 				"card matching cardBeforeSpecial should be processed after a "
 				+ "special card is played");
+	}
+	
+	@Test
+	@DisplayName("Check baseline AI pick a random valid card")
+	void testBaseLineAI() {
+		GameState state = new GameState(0, 3, Player.BASELINE_AI);
+		// get the first AI player
+		BaselineAIPlayer player = (BaselineAIPlayer) state.getAllPlayers().get(0);
+		// initialize stack and setCardToMatch
+		player.setStack(new ArrayList<Card>(testPile2));
+		state.setCardToMatch(new NumberCard("0", Card.RED));
+		// make AI pick a card
+		player.updateValidCard(state.getCardToMatch(), state.getCardBeforeSpecial());
+		player.pickCard();
+		player.pickColorForWild();
+		Card selection = player.attemptPlayCard();
+		assertEquals(true, state.checkCardValidity(state.getCardToMatch(), 
+				state.getCardBeforeSpecial(), selection));
+	}
+	
+	@Test
+	@DisplayName("check strategic AI picks a card with the most popular color")
+	void testStrategicAICardSelection() {
+		GameState state = new GameState(0, 2, Player.STRATEGIC_AI);
+		// get the second AI player
+		StrategicAIPlayer player = (StrategicAIPlayer) state.getAllPlayers().get(1);
+		// initialize stack and setCardToMatch
+		player.setStack(new ArrayList<Card>(testPile2));
+		state.setCardToMatch(new NumberCard("7", Card.RED));
+		// make AI pick a card
+		player.updateValidCard(state.getCardToMatch(), state.getCardBeforeSpecial());
+		player.pickCard();
+		Card selection = player.attemptPlayCard();
+		// valid cards should be {7 Green, skip red, 2 red, wild, wild draw four}
+		// so AI should pick a red card
+		assertEquals(Card.RED, selection.getColor());
+	}
+	
+	@Test 
+	@DisplayName("check strategic AI picks most popular color for wild card") 
+	void testStrategicAIColorSelection() {
+		GameState state = new GameState(0, 2, Player.STRATEGIC_AI);
+		// get the first AI player
+		StrategicAIPlayer player = (StrategicAIPlayer) state.getAllPlayers().get(0);
+		// initialize stack
+		player.setStack(new ArrayList<Card>(testPile1));
+		// make AI pick a color
+		player.pickColorForWild();
+		String selection = player.getColorToUse();
+		// The most popular color in testPile1 is yellow
+		assertEquals(Card.YELLOW, selection);
 	}
 }

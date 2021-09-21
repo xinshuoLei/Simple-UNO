@@ -13,12 +13,19 @@ public class HumanPlayer extends Player {
 		setAiType(NOT_AI);
 	}
 	
+	/**
+	 * Function that pick a card
+	 */
 	public void pickCard() {
-		// do nothing for now
+		// just place holder
+		// card selection for human player is done in inGameControl
 	}
 	
+	/**
+	 * Function that pick a color
+	 */
 	public void pickColorForWild() {
-		// do nothing for now
-		return;
+		// just place holder
+		// color selection for human player is done in inGameControl
 	}
 }
