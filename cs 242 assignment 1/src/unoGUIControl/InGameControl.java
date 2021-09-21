@@ -98,7 +98,7 @@ public class InGameControl {
 				// show a confirming dialog
 				JOptionPane optionPane = new JOptionPane();
 				int result = JOptionPane.showConfirmDialog(optionPane,
-						"Click yes to confirm switching to next play");
+						"Click yes to confirm switching to next player");
 				int confirm = 0;
 				if (result == confirm) {
 					model.nextPlayer();
@@ -187,7 +187,7 @@ public class InGameControl {
 						break;
 						
 					case SKIP:
-						// display a dialog confirming switching to next playre
+						// display a dialog confirming switching to next player
 						JOptionPane optionPaneSkip = new JOptionPane();
 						int resultSkip = JOptionPane.showConfirmDialog(optionPaneSkip,
 								"You have a draw penalty." + 
