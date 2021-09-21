@@ -1,4 +1,4 @@
-package unoContent;
+package unoCard;
 
 /**
  * class for wild cards and wild draw four cards
@@ -9,12 +9,5 @@ public class WildCard extends Card {
 		// color of wild cards is null when it is not played by a player
 		// If it is played by a player, then the color is the color chosen by the player
 		super(setType, setColor);
-	}
-	
-	/**
-	 * function that print info about the card to stdout
-	 */
-	public void printCard() {
-		System.out.println(getSymbol());
 	}
 }
