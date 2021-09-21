@@ -116,7 +116,7 @@ public class StartView extends GUI {
 		
 		frame.setContentPane(startPanel);
 		frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	/**
@@ -127,8 +127,8 @@ public class StartView extends GUI {
 		int imageX = (START_WINDOW_WIDTH - IMAGE_WIDTH) / 2;
 	    int imageY = 80;
 	    String logoUrl = "https://i.dlpng.com/static/png/6905409_preview.png";
-		displayImageFromUrl(startPanel, IMAGE_WIDTH, IMAGE_HEIGHT, 
-				imageX, imageY, logoUrl);
+	    displayImageFromUrl(startPanel, IMAGE_WIDTH, IMAGE_HEIGHT, 
+	    		imageX, imageY, logoUrl);
 	}
 
 	
@@ -216,7 +216,7 @@ public class StartView extends GUI {
 		 numAIPlayer.addChangeListener(aiNumListener);
 	 }
 
-	public JFrame getFrame() {
+	 public JFrame getFrame() {
 		return frame;
-	}
+	 }
 }

@@ -405,8 +405,7 @@ public class InGameView extends GUI {
 	private void displayPlayerNum(int playerNum) {
 		// display total number of players
 		String numPlayerPrompt = "number of players:   " + playerNum;
-		displayText(inGamePanel, numPlayerPrompt, FONT_SIZE, 650, 
-				80);
+		displayText(inGamePanel, numPlayerPrompt, FONT_SIZE, 650, 80);
 	}
 	
 	/**

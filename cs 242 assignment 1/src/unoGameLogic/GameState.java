@@ -158,12 +158,12 @@ public class GameState {
 			
 			// shuffle discard pile and make it the new draw pile
 			Collections.shuffle(discardPileCopy);
-		    drawPile = discardPileCopy;
+			drawPile = discardPileCopy;
 		    
 		    // update discard pile to only include the top card
-		    while (discardPile.size() != 1) {
-		    	discardPile.remove(discardPile.size() - 1);
-		    }
+			while (discardPile.size() != 1) {
+				discardPile.remove(discardPile.size() - 1);
+			}
 		}
 	}
 	

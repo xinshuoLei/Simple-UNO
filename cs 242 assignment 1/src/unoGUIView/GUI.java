@@ -36,8 +36,7 @@ public abstract class GUI {
 	 public static JLabel displayImageFromUrl(JPanel panel, int width , 
 			 int height, int locationX, int locationY, String path){
 		 try {
-			 
-			 // try getting the uno logo from the url
+			 // try getting the image from the url
 			 URL url = new URL(path);
 			 BufferedImage image = ImageIO.read(url);
 	         
@@ -137,7 +136,6 @@ public abstract class GUI {
 	 public static JButton addButton(JPanel panel, String text, int width, int height, 
 			 int locationX, int locationY) {
 	        JButton button = new JButton(text);
-	        // TODO: add action listener
 	        panel.add(button);
 	        button.setSize(width, height);
 	        button.setLocation(locationX, locationY);

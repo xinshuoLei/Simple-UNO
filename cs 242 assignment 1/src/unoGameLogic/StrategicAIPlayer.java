@@ -57,7 +57,7 @@ public class StrategicAIPlayer extends Player {
 		String mostPopularColor = null;
 		for (Entry<String, Integer> entry : colorToNumber.entrySet()) {
 	        if (entry.getValue().equals(maxNumber)) {
-	            mostPopularColor = entry.getKey();
+	        	mostPopularColor = entry.getKey();
 	        }
 	    }
 		return mostPopularColor;

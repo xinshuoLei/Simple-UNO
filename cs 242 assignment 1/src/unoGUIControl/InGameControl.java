@@ -24,6 +24,9 @@ import java.util.List;
 import unoGameLogic.GameState;
 import unoGameLogic.Player;
 
+/**
+ * The control for in game GUI
+ */
 public class InGameControl {
 	
 	/**
@@ -148,20 +151,20 @@ public class InGameControl {
 	 */
 	private void setupDrawPileListenter() {
 		MouseListener listener = new MouseAdapter() {
-			 @Override
-             public void mouseClicked(MouseEvent e) {
-				 if (model.getCanDrawCard()) {
-					 // if the player is still allowed to draw a card
-					 // draw a card
-					 Card cardDrawn = model.drawCard();
-	                 view.displayCardDrawn(cardDrawn);
-				 } else {
-					 // display a message showing the player can't draw
-					 JOptionPane optionPaneFail = new JOptionPane();
-						JOptionPane.showMessageDialog(optionPaneFail, "You "
-								+ "can only draw one card in each round");
-				 }
-             }
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (model.getCanDrawCard()) {
+					// if the player is still allowed to draw a card
+					// draw a card
+					Card cardDrawn = model.drawCard();
+					view.displayCardDrawn(cardDrawn);
+				} else {
+					// display a message showing the player can't draw
+					JOptionPane optionPaneFail = new JOptionPane();
+					JOptionPane.showMessageDialog(optionPaneFail, "You "
+					+ "can only draw one card in each round");
+				}
+			}
 		};
 		view.addDrawPileListeneer(listener);
 	}
@@ -253,8 +256,8 @@ public class InGameControl {
 			String message = "AI finished turn. click yes to switch to next player";
 			if (cardPlayed != null) {
 				message = "AI finished turn." +
-						"\nAI played " + cardPlayed +
-						"\nclick yes to switch to next player";
+					"\nAI played " + cardPlayed +
+					"\nclick yes to switch to next player";
 			}
 			// pop up window showing AI finished turn
 			int result = JOptionPane.showConfirmDialog(optionPane,message);

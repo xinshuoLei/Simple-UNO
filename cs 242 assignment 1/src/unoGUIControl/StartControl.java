@@ -12,6 +12,9 @@ import javax.swing.event.ChangeListener;
 import unoGUIModel.StartModel;
 import unoGUIView.StartView;
 
+/**
+ * The control class for start GUI
+ */
 public class StartControl {
 	
 	/**

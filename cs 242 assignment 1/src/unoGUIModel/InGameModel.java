@@ -6,6 +6,10 @@ import unoCard.Card;
 import unoGameLogic.GameState;
 import unoGameLogic.Player;
 
+
+/**
+ * The model class for in game GUI.
+ */
 public class InGameModel {
 	
 	/**

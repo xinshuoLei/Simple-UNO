@@ -1,4 +1,5 @@
 package unoGUIModel;
+
 /**
  * Model for the start view
  */
