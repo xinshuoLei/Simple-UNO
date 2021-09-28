@@ -11,18 +11,15 @@ import unoCard.NumberCard;
 import unoCard.ReverseCard;
 import unoCard.SkipCard;
 import unoCard.WildCard;
+import unoGameLogic.BaselineAIPlayer;
 import unoGameLogic.GameState;
 import unoGameLogic.Player;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import unoGameLogic.StrategicAIPlayer;
 import java.util.*;
 
 
 /**
  * Unit tests for uno game logic 
- * set user input reference:
- * https://stackoverflow.com/questions/6415728/junit-testing-with-simulated-user-input 
  */
 class unoTest {
 	
@@ -47,6 +44,7 @@ class unoTest {
 		testPile.add(new SkipCard(Card.SKIP, Card.RED));
 		testPile.add(new WildCard(Card.WILD, null));
 		testPile.add(new NumberCard("0", Card.GREEN));
+		testPile.add(new NumberCard("3", Card.YELLOW));
 		return testPile;
 	}
 	
@@ -58,7 +56,6 @@ class unoTest {
 		testPile.add(new SkipCard(Card.SKIP, Card.RED));
 		testPile.add(new WildCard(Card.WILD, null));
 		testPile.add(new NumberCard("2", Card.RED));
-		testPile.add(new WildCard(Card.WILD_DRAW4, null));
 		testPile.add(new WildCard(Card.WILD_DRAW4, null));
 		return testPile;
 	}
@@ -83,7 +80,7 @@ class unoTest {
 	@Test
 	@DisplayName("Check initial draw pile")
 	void testInitialPile() {
-		GameState state = new GameState(null);
+		GameState state = new GameState(0, 0, null);
 		assertEquals(108, state.getDrawPile().size(), 
 				"The size of the initial draw pile should be 108");
 	}
@@ -92,18 +89,17 @@ class unoTest {
 	@DisplayName("First card of draw pile should be random")
 	void testShuffleCard() {
 		System.out.println("output of testShuffleCard(): ");
-		GameState state = new GameState(null);
+		GameState state = new GameState(0, 0, null);
 		Card firstCard = state.getDrawPile().get(0);
 		System.out.print("The first card is: ");
-		firstCard.printCard();
+		System.out.println(firstCard.getCardInfo());
 		System.out.println();
 	}
 
 	@Test
 	@DisplayName("Check a player's initial stack of cards")
 	void testPlayerInitialStack() {
-		List<String> playerNames = new ArrayList<>(testPlayerList1);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(3, 0, null);
 		state.initializePlayerStack();
 		for (Player onePlayer : state.getAllPlayers()) {
 			assertEquals(7, onePlayer.getStack().size(), 
@@ -213,7 +209,7 @@ class unoTest {
 	@Test
 	@DisplayName("Check discard pile is reused correctly when draw pile is empty")
 	void testReuseDiscardPile1() {
-		GameState state = new GameState(null);
+		GameState state = new GameState(0, 0, null);
 		// set discard pile and empty draw pile
 		state.setDiscardPile(new ArrayList<>(testPile1));
 		state.setDrawPile(new ArrayList<Card>());
@@ -242,7 +238,7 @@ class unoTest {
 	@Test
 	@DisplayName("Discard pile should not be reused if draw pile is not empty")
 	void testReuseDiscardPile2() {
-		GameState state = new GameState(null);
+		GameState state = new GameState(0, 0, null);
 		// set discard pile and draw pile
 		state.setDrawPile(new ArrayList<>(testPile1));
 		state.setDiscardPile(new ArrayList<>(testPile2));
@@ -261,8 +257,7 @@ class unoTest {
 	@Test
 	@DisplayName("Check shouldEnd return true when the game should end")
 	void testShouldEndTrue() {
-		List<String> playerNames = new ArrayList<>(testPlayerList1);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(3, 0, null);
 		state.initializePlayerStack();
 		
 		// empty a player's stack
@@ -276,8 +271,7 @@ class unoTest {
 	@Test
 	@DisplayName("Check shouldEnd return false when the game is not over")
 	void testShouldEndFalse() {
-		List<String> playerNames = new ArrayList<>(testPlayerList1);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(3, 0, null);
 		state.initializePlayerStack();
 		
 		// modify a player's stack
@@ -291,8 +285,7 @@ class unoTest {
 	@Test
 	@DisplayName("Check disacrd pile and player stack is updated correctly - valid card")
 	void testUpdatePileTrue() {
-		List<String> playerNames = new ArrayList<>(testPlayerList2);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(2, 0, null);
 		state.initializePlayerStack();
 		
 		// give a custom discard pile to make sure the card played 
@@ -330,8 +323,7 @@ class unoTest {
 	@DisplayName("Check disacrd pile and player stack is not updated - invalid card")
 	void testUpdatePileFalse() {
 		System.out.println("output of testUpdatePileFalse(): ");
-		List<String> playerNames = new ArrayList<>(testPlayerList1);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(3, 0, null);
 		state.initializePlayerStack();
 		
 		// give a custom discard pile to make sure it stays the same
@@ -364,8 +356,7 @@ class unoTest {
 	@Test
 	@DisplayName("Check effect of a valid reverse card")
 	void testValidReverse() {
-		List<String> playerNames = new ArrayList<>(testPlayerList3);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(4, 0, null);
 		
 		// save initial allPlayers
 		List<Player> initialAllPlayers = new ArrayList<>(state.getAllPlayers());
@@ -390,10 +381,9 @@ class unoTest {
 	}
 	
 	@Test
-	@DisplayName("Check effect of a wild card")
+	@DisplayName("Check effect of a skip card")
 	void testValidSkip() {
-		List<String> playerNames = new ArrayList<>(testPlayerList1);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(3, 0, null);
 		
 		// set current player to the third player
 		state.setCurrentPlayer(2);
@@ -401,25 +391,29 @@ class unoTest {
 		state.setCardToMatch(new NumberCard("0", Card.BLUE));
 		// process a reverse card
 		state.processCardPlayed(new SkipCard(Card.SKIP, Card.BLUE));
-		
+		state.incrementCurrentPlayer();
 		assertEquals(true, state.getCurrentPlayer() == 1);
 	}
 	
 	@Test
 	@DisplayName("Check effect of a wild card")
 	void testValidWild() {
-		System.out.println("output of testValidWild(): ");
-		List<String> playerNames = new ArrayList<>(testPlayerList2);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(2, 0, null);
 		
 		// set cardToMatch so we can know if it is updated
 		state.setCardToMatch(new NumberCard("3", Card.BLUE));
+		
+		// set color choice for wild card
+		int currentPlayer = state.getCurrentPlayer();
+		Player player = state.getAllPlayers().get(currentPlayer);
+		player.setColorToUse(Card.RED);
+		
 		// process a wild card
 		state.processCardPlayed(new WildCard(Card.WILD, null));
-		// print updated cardToMatch
-		System.out.print("cardToMatch is: ");
-		state.getCardToMatch().printCard();
-		System.out.println();
+		
+		// cardToMatch should be set to wild, red
+		Card expectedCardToMatch = new WildCard(Card.WILD, Card.RED);
+		assertEquals(true, cardIsEqual(state.getCardToMatch(), expectedCardToMatch));
 	}
 	
 	@Test
@@ -428,9 +422,7 @@ class unoTest {
 	 * included custom rule split draw
 	 */
 	void testValidNormalNumberCard() {
-		List<String> playerNames = new ArrayList<>(testPlayerList2);
-		GameState state = new GameState(playerNames);
-		
+		GameState state = new GameState(2, 0, null);
 		// set cardToMatch so we can know if it is updated
 		state.setCardToMatch(new NumberCard("3", Card.BLUE));
 		// process a wild card
@@ -447,8 +439,7 @@ class unoTest {
 	 * included custom rule split draw
 	 */
 	void testValidDrawTwoCardNoStack() {
-		List<String> playerNames = new ArrayList<>(testPlayerList3);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(4, 0, null);
 		state.initializePlayerStack();
 		
 		state.setCardToMatch(new NumberCard("5", Card.BLUE));
@@ -466,6 +457,7 @@ class unoTest {
 		
 		// the next player plays a card that is not draw two
 		// so this player need to draw two card and skip this turn
+		state.incrementCurrentPlayer();
 		state.processCardPlayed(new NumberCard("4", Card.BLUE));
 		assertEquals(player1InitialStack.size() + 1, player1InitialStack.size() + 1,  
 				"next player should draw one cards because of draw split");
@@ -476,8 +468,7 @@ class unoTest {
 	@Test
 	@DisplayName("Check effect of a vaid draw two card - with stacking")
 	void testValidDrawTwoCardStack() {
-		List<String> playerNames = new ArrayList<>(testPlayerList3);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(4, 0, null);
 		state.initializePlayerStack();
 		
 		state.setCardToMatch(new NumberCard("7", Card.YELLOW));
@@ -487,11 +478,12 @@ class unoTest {
 		// player1 plays draw two, so penalty for player2 and 3 should be 1 
 		Card played = new DrawTwoCard(Card.DRAW2, Card.YELLOW);
 		state.processCardPlayed(played);
-		
+		state.incrementCurrentPlayer();
 		// player2 plays another draw two
 		// penalty for player3 should be 1+1+1 = 3
 		// penalty for player4 should be 0+1 = 1
 		state.processCardPlayed(new DrawTwoCard(Card.DRAW2, Card.BLUE));
+		state.incrementCurrentPlayer();
 		List<Integer> penalty = state.getDrawPenalty();
 		
 		// penalty for player with index 1 should be 0
@@ -506,19 +498,16 @@ class unoTest {
 	@Test
 	@DisplayName("Check effect of a valid wild draw four card - no stacking")
 	void testValidWildDrawFour() {
-		System.out.println("output of testValidWildDrawFour(): ");
-		List<String> playerNames = new ArrayList<>(testPlayerList3);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(4, 0, null);
 		state.initializePlayerStack();
 	
 		// set current player to 1
 		state.setCurrentPlayer(1);
 		
-		// set input to 0, meaning the user chose yellow as the next color
-		// backup System.in to restore it later
-		InputStream sysInBackup = System.in; 
-		ByteArrayInputStream in = new ByteArrayInputStream("\n0".getBytes());
-		System.setIn(in);
+		// set color choice for wild card
+		int currentPlayer = state.getCurrentPlayer();
+		Player player = state.getAllPlayers().get(currentPlayer);
+		player.setColorToUse(Card.YELLOW);
 		
 		// process a wild draw four card
 		Card played = new WildCard(Card.WILD_DRAW4, null);
@@ -531,7 +520,6 @@ class unoTest {
 		// cardToMatch should be set to wild draw four, yellow
 		Card expectedCardToMatch = new WildCard(Card.WILD_DRAW4, Card.YELLOW);
 		assertEquals(true, cardIsEqual(state.getCardToMatch(), expectedCardToMatch));
-		System.setIn(sysInBackup);
 		System.out.println("");
 	}
 	
@@ -539,8 +527,7 @@ class unoTest {
 	@Test
 	@DisplayName("player draw a card and is able to play it")
 	void testDrawAndPlay() {
-		List<String> playerNames = new ArrayList<>(testPlayerList1);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(3, 0, null);
 		state.initializePlayerStack();
 		
 		state.setCardToMatch(new NumberCard("5", Card.GREEN));
@@ -559,8 +546,7 @@ class unoTest {
 	@Test
 	@DisplayName("Check special rule: cardBefore Special") 
 	void testCardBeforeSpecial() {
-		List<String> playerNames = new ArrayList<>(testPlayerList3);
-		GameState state = new GameState(playerNames);
+		GameState state = new GameState(4, 0, null);
 		
 		// set cardToMatch so preceding card can be processed
 		state.setCardToMatch(new NumberCard("1", Card.BLUE));
@@ -586,5 +572,56 @@ class unoTest {
 		assertEquals(true, cardIsEqual(thirdCard, state.getCardToMatch()),
 				"card matching cardBeforeSpecial should be processed after a "
 				+ "special card is played");
+	}
+	
+	@Test
+	@DisplayName("Check baseline AI pick a random valid card")
+	void testBaseLineAI() {
+		GameState state = new GameState(0, 3, Player.BASELINE_AI);
+		// get the first AI player
+		BaselineAIPlayer player = (BaselineAIPlayer) state.getAllPlayers().get(0);
+		// initialize stack and setCardToMatch
+		player.setStack(new ArrayList<Card>(testPile2));
+		state.setCardToMatch(new NumberCard("0", Card.RED));
+		// make AI pick a card
+		player.updateValidCard(state.getCardToMatch(), state.getCardBeforeSpecial());
+		player.pickCard();
+		player.pickColorForWild();
+		Card selection = player.attemptPlayCard();
+		assertEquals(true, state.checkCardValidity(state.getCardToMatch(), 
+				state.getCardBeforeSpecial(), selection));
+	}
+	
+	@Test
+	@DisplayName("check strategic AI picks a card with the most popular color")
+	void testStrategicAICardSelection() {
+		GameState state = new GameState(0, 2, Player.STRATEGIC_AI);
+		// get the second AI player
+		StrategicAIPlayer player = (StrategicAIPlayer) state.getAllPlayers().get(1);
+		// initialize stack and setCardToMatch
+		player.setStack(new ArrayList<Card>(testPile2));
+		state.setCardToMatch(new NumberCard("7", Card.RED));
+		// make AI pick a card
+		player.updateValidCard(state.getCardToMatch(), state.getCardBeforeSpecial());
+		player.pickCard();
+		Card selection = player.attemptPlayCard();
+		// valid cards should be {7 Green, skip red, 2 red, wild, wild draw four}
+		// so AI should pick a red card
+		assertEquals(Card.RED, selection.getColor());
+	}
+	
+	@Test 
+	@DisplayName("check strategic AI picks most popular color for wild card") 
+	void testStrategicAIColorSelection() {
+		GameState state = new GameState(0, 2, Player.STRATEGIC_AI);
+		// get the first AI player
+		StrategicAIPlayer player = (StrategicAIPlayer) state.getAllPlayers().get(0);
+		// initialize stack
+		player.setStack(new ArrayList<Card>(testPile1));
+		// make AI pick a color
+		player.pickColorForWild();
+		String selection = player.getColorToUse();
+		// The most popular color in testPile1 is yellow
+		assertEquals(Card.YELLOW, selection);
 	}
 }

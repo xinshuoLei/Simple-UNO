@@ -73,21 +73,34 @@ public class GameState {
 	
 	/**
 	 * Constructor of the GameState class
-	 * @param playerNames List of player names
+	 * @param numHumanPlayers number of AI players
+	 * @param numAI number of human players
+	 * @param aiType type of AI
 	 */
-	public GameState(List<String> playerNames) {
+	public GameState(int numHumanPlayers, int numAI, String aiType) {
 		
 		initializeDrawPile();
 		
 		Collections.shuffle(drawPile);
 		
 		// initialize the list allPlayers and drawPenalty
-		if (playerNames != null) {
-			for (int z = 0; z < playerNames.size(); z++) {
-				allPlayers.add(new Player(playerNames. get(z)));	
+		for (int i = 0; i < numHumanPlayers; i++) {
+			allPlayers.add(new HumanPlayer(i));	
+			drawPenalty.add(0);
+		}
+		if (aiType != null) {
+			for (int j = numHumanPlayers; j < numAI + numHumanPlayers; j++) {
+				if (aiType.equals(Player.BASELINE_AI)) {
+					allPlayers.add(new BaselineAIPlayer(j));	
+				} else if (aiType.equals(Player.STRATEGIC_AI)) {
+					allPlayers.add(new StrategicAIPlayer(j));	
+				}
 				drawPenalty.add(0);
 			}
 		}
+		
+		
+		
 	}
 
 	/**
@@ -145,12 +158,12 @@ public class GameState {
 			
 			// shuffle discard pile and make it the new draw pile
 			Collections.shuffle(discardPileCopy);
-		    drawPile = discardPileCopy;
+			drawPile = discardPileCopy;
 		    
 		    // update discard pile to only include the top card
-		    while (discardPile.size() != 1) {
-		    	discardPile.remove(discardPile.size() - 1);
-		    }
+			while (discardPile.size() != 1) {
+				discardPile.remove(discardPile.size() - 1);
+			}
 		}
 	}
 	
@@ -165,17 +178,18 @@ public class GameState {
 		Player currentPlayer_ = allPlayers.get(currentPlayer);
 
 		// check if the player has a non-zero penalty
-		 boolean applyPenalty = checkPenalty(played);
-			if (applyPenalty) {
-				// apply penalty and skip current player's turn
-				currentPlayer_.drawCard(new ArrayList<>(drawPile), 
-						drawPenalty.get(currentPlayer), false, null, null);
-				for (int i = 0; i < drawPenalty.get(currentPlayer); i++) {
-					drawPile.remove(0);
-				}
-				incrementCurrentPlayer();
-				return false;
+		boolean applyPenalty = checkPenalty(played);
+		if (applyPenalty) {
+			// apply penalty and skip current player's turn
+			currentPlayer_.drawCard(new ArrayList<>(drawPile), 
+			drawPenalty.get(currentPlayer), false, null, null);
+			for (int i = 0; i < drawPenalty.get(currentPlayer); i++) {
+				drawPile.remove(0);
 			}
+			drawPenalty.set(currentPlayer, 0);
+			incrementCurrentPlayer();
+			return false;
+		}
 		
 		// player has no card that matches cardToMatch, 
 		// so draw from stack
@@ -221,7 +235,7 @@ public class GameState {
 		currentPlayer_.removeCardFromStack(played);
 			
 		// next player's turn
-		incrementCurrentPlayer();
+		// incrementCurrentPlayer();
 		return true;
 	}
 	
@@ -313,7 +327,7 @@ public class GameState {
 	/**
 	 * increment the variable currentPlayer to indicate it it next player's turn
 	 */
-	private void incrementCurrentPlayer() {
+	public void incrementCurrentPlayer() {
 		if (currentPlayer == allPlayers.size() - 1) {
 			// if the currentPlayer is the last player in allPlayers
 			// next player will be the first player in allPlayers
@@ -331,25 +345,12 @@ public class GameState {
 	private void processWildCard(String symbol) {
 		// store the current cardToMatch as cardBeforeSpecial
 		cardBeforeSpecial = cardToMatch;
-		while(true) {
-			System.out.println("plase choose the next color to be matched");
-			System.out.println
-			("enter 0 for yellow, 1 for red, 2 for green, or 3 for blue");
-			// ask for user keyboard input
-			Scanner scan = new Scanner(System.in);
-			int choice = scan.nextInt();
-			// if choice is valid, change color to match to a card with 
-			// no symbol and the selected color and break out the loop
-			if (choice == 1 || choice == 2 || choice == 3 || choice == 0) {
-				// set cardToMatch to account for 
-				// the fact last played card is wild draw four
-				// and the color player selected
-				cardToMatch = new WildCard(symbol, allColors[choice]);
-				scan.close();
-				break;
-			}
-			// for invalid input, ask the user to try again
-		}
+		Player currentPlayerObj = allPlayers.get(currentPlayer);
+		String colorChoice = currentPlayerObj.getColorToUse();
+		// set cardToMatch to account for 
+		// the fact last played card is wild draw four
+		// and the color player selected
+		cardToMatch = new WildCard(symbol, colorChoice);
 	}
 
 	/**
@@ -391,23 +392,26 @@ public class GameState {
 	 */
 	public static boolean checkCardValidity(Card cardToMatch, Card cardBeforeSpcial,
 			Card cardPlayed) {
+		if (cardPlayed == null) {
+			return false;
+		}
 		// wild cards are always valid
 		if (cardPlayed.isWild()) {
 			return true;
 		}
 		// cardPlayed need to have the same symbol or color
-		boolean colorMatch = (cardPlayed.getColor() == cardToMatch.getColor());
-		boolean symbolMatch = (cardPlayed.getSymbol() == cardToMatch.getSymbol());
+		boolean colorMatch = (cardPlayed.getColor().equals(cardToMatch.getColor()));
+		boolean symbolMatch = (cardPlayed.getSymbol().equals(cardToMatch.getSymbol()));
 		boolean validNormal = colorMatch || symbolMatch;
 		
 		// if cardBeforeSpecial is not null and cardToMatch is a special card
 		// check if card played match card before special
 		if (!cardToMatch.isNumber() && cardBeforeSpcial != null) {
 			// store the current cardToMatch as cardBeforeSpecial
-			boolean colorMatchSpecial = (cardPlayed.getColor() == 
-					cardBeforeSpcial.getColor());
-			boolean symbolMatchSpecial = (cardPlayed.getSymbol() == 
-					cardBeforeSpcial.getSymbol());
+			boolean colorMatchSpecial = (cardPlayed.getColor().equals(
+					cardBeforeSpcial.getColor()));
+			boolean symbolMatchSpecial = (cardPlayed.getSymbol().equals( 
+					cardBeforeSpcial.getSymbol()));
 			return colorMatchSpecial || symbolMatchSpecial || validNormal;
 		}
 		
@@ -463,6 +467,10 @@ public class GameState {
 
 	public Card getCardBeforeSpecial() {
 		return cardBeforeSpecial;
+	}
+
+	public void setCardBeforeSpecial(Card cardBeforeSpecial) {
+		this.cardBeforeSpecial = cardBeforeSpecial;
 	}
 
 

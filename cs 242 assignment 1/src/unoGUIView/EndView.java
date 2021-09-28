@@ -1,4 +1,4 @@
-package unoGUI;
+package unoGUIView;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
