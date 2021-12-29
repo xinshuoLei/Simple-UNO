@@ -1,3 +1,3 @@
-# fa21-cs242-assignment1
+# Assignment 1 of Programming Studio @ UIUC
 
-Discussed structure and function implementation with Peiyuan Jin (peiyuan3)
+Simple UNO game with two custom rules implemented using Java and Java Swing
